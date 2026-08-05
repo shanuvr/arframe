@@ -1,0 +1,103 @@
+/* --- GLOBAL RESET & VARIABLES --- */
+:root {
+  --primary: #c5a059;
+  --primary-dark: #a48243;
+  --gold: var(--primary);
+  --dark: #111111;
+  --dark-light: #1a1a1a;
+  --black: #000000;
+  --black-light: #111111;
+  --light: #f9f9f9;
+  --white: #ffffff;
+  --gray-light: var(--text-muted);
+  --text-dark: #222222;
+  --text-muted: #666666;
+  --font-heading: 'Marcellus', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --transition: all 0.3s ease;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.page-container {
+  background-color: transparent;
+  color: inherit;
+  min-height: 80vh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: #ffffff;
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Reset link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Reset list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Reset button styles */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Reset input styles */
+input,
+textarea,
+select {
+  font-family: inherit;
+  border: none;
+}
+
+/* Heading styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}

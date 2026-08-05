@@ -1,0 +1,123 @@
+.expertise-section {
+    background-color: var(--light);
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.section-title-container {
+    margin-bottom: 50px;
+}
+
+.section-title-container h2 {
+    font-size: 36px;
+}
+
+.expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.expertise-card {
+    background: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: var(--transition);
+}
+
+.expertise-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.expertise-image {
+    height: 240px;
+    overflow: hidden;
+}
+
+.expertise-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.expertise-card:hover .expertise-image img {
+    transform: scale(1.05);
+}
+
+.expertise-content {
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.expertise-content i {
+    font-size: 20px;
+    color: var(--primary);
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 4px;
+    min-width: 44px;
+    text-align: center;
+}
+
+.expertise-content h3 {
+    font-size: 18px;
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+@media (max-width: 992px) {
+    .expertise-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .expertise-image {
+        height: 180px;
+    }
+
+    .expertise-content {
+        padding: 18px;
+        gap: 10px;
+    }
+
+    .expertise-content h3 {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-title-container h2 {
+        font-size: 24px;
+    }
+
+    .expertise-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+    }
+
+    .expertise-image {
+        height: 120px;
+    }
+
+    .expertise-content {
+        padding: 12px;
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 8px;
+    }
+
+    .expertise-content i {
+        font-size: 14px;
+        min-width: 32px;
+        padding: 6px;
+    }
+
+    .expertise-content h3 {
+        font-size: 12px;
+    }
+}

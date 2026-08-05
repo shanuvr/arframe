@@ -1,0 +1,183 @@
+.testimonials-section {
+    background-color: #ffffff;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.testimonials-section h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-top: 50px;
+    align-items: stretch;
+}
+
+.reviews-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.review-card {
+    background: var(--light);
+    padding: 30px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.review-text {
+    font-size: 14px;
+    font-style: italic;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.review-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.review-user i {
+    font-size: 40px;
+    color: #ddd;
+}
+
+.user-info h5 {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.user-info p {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.rating-box {
+    background: var(--dark);
+    color: #ffffff;
+    padding: 40px;
+    border-radius: 4px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-box h4 {
+    font-family: var(--font-body);
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.stars {
+    color: #ffcc00;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.stars i {
+    margin-right: 5px;
+}
+
+.rating-num {
+    font-size: 46px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 992px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .reviews-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .testimonials-section h2 {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .testimonials-section {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .testimonials-section h2 {
+        font-size: 24px;
+    }
+
+    .testimonials-grid {
+        margin-top: 30px;
+        gap: 25px;
+    }
+
+    .reviews-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .review-card {
+        padding: 18px;
+    }
+
+    .review-text {
+        font-size: 12px;
+        margin-bottom: 14px;
+    }
+
+    .review-user i {
+        font-size: 30px;
+    }
+
+    .user-info h5 {
+        font-size: 12px;
+    }
+
+    .user-info p {
+        font-size: 10px;
+    }
+
+    .rating-box {
+        padding: 25px 20px;
+        border-radius: 8px;
+    }
+
+    .rating-box h4 {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .stars {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .stars i {
+        margin-right: 3px;
+    }
+
+    .rating-num {
+        font-size: 32px;
+        margin-bottom: 4px;
+    }
+
+    .rating-box p {
+        font-size: 11px !important;
+    }
+}

@@ -1,0 +1,123 @@
+.about-section {
+    background-color: #ffffff;
+    margin-top: 40px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.about-image {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.about-image img {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    display: block;
+}
+
+.about-text h2 {
+    font-size: 42px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.about-text p {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+    margin-bottom: 20px;
+}
+
+.stat-item h3 {
+    font-size: 32px;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.stat-item p {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+    .about-section .grid-2 {
+        grid-template-columns: 1fr !important;
+        gap: 40px;
+    }
+
+    .about-image img {
+        height: 350px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .about-section {
+        margin-top: 20px;
+    }
+
+    .about-image {
+        width: 100%;
+        min-height: 200px;
+        background-color: #f0f0f0;
+    }
+
+    .about-image img {
+        width: 100% !important;
+        height: 250px !important;
+        object-fit: cover !important;
+        display: block !important;
+        max-width: 100%;
+    }
+
+    .about-text h2 {
+        font-size: 26px;
+    }
+
+    .about-text p {
+        font-size: 14px;
+    }
+
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 25px 20px;
+        text-align: center;
+    }
+
+    .stat-item {
+        width: 100%;
+    }
+
+    .stat-item h3 {
+        font-size: 24px;
+    }
+
+    .stat-item p {
+        font-size: 11px;
+    }
+}
