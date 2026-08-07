@@ -1,25 +1,29 @@
+import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './styles/global.css';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
-import Home from './pages/Home';
-import AboutUs from './pages/AboutUs/AboutUs';
-import DesignExcellence from './pages/DesignExcellence/DesignExcellence';
-import Projects from './pages/Projects/Projects';
-import ContactUs from './pages/ContactUs/ContactUs';
+
+const Home = lazy(() => import('./pages/Home'));
+const AboutUs = lazy(() => import('./pages/AboutUs/AboutUs'));
+const DesignExcellence = lazy(() => import('./pages/DesignExcellence/DesignExcellence'));
+const Projects = lazy(() => import('./pages/Projects/Projects'));
+const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 
 function App() {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/design" element={<DesignExcellence />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/contact" element={<ContactUs />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/design" element={<DesignExcellence />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/contact" element={<ContactUs />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </>
   );

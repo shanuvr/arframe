@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './Projects.css';
 import { Link } from 'react-router-dom';
 
@@ -6,10 +6,6 @@ const Projects = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const [activeFilter, setActiveFilter] = useState('All');
-
-  const categories = ['All', 'Luxury Villas', 'Commercial', 'Interiors'];
 
   const projectsData = [
     { id: 1, title: 'The Glass House', category: 'Luxury Villas', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop' },
@@ -19,10 +15,6 @@ const Projects = () => {
     { id: 5, title: 'Apex Tower', category: 'Commercial', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop' },
     { id: 6, title: 'Urban Loft', category: 'Interiors', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop' },
   ];
-
-  const filteredProjects = activeFilter === 'All' 
-    ? projectsData 
-    : projectsData.filter(project => project.category === activeFilter);
 
   return (
     <div className="page-container">
@@ -37,20 +29,8 @@ const Projects = () => {
 
       <section className="projects-section section-padding">
         <div className="container">
-          <div className="filter-container fade-in-up">
-            {categories.map((category, index) => (
-              <button 
-                key={index}
-                className={`filter-btn ${activeFilter === category ? 'active' : ''}`}
-                onClick={() => setActiveFilter(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
           <div className="projects-masonry">
-            {filteredProjects.map((project, index) => (
+            {projectsData.map((project, index) => (
               <div className="project-item fade-in-up" key={project.id} style={{ animationDelay: `${(index % 3) * 0.1}s` }}>
                 <img src={project.image} alt={project.title} />
                 <div className="project-overlay">
@@ -66,11 +46,18 @@ const Projects = () => {
         </div>
       </section>
       
-      <section className="cta-section section-padding text-center" style={{ backgroundColor: 'var(--black-light)' }}>
-        <div className="container">
-          <h2>Have a project in mind?</h2>
-          <p>We'd love to hear about it and help you build it.</p>
-          <Link to="/contact" className="btn-gold mt-4">Contact Us Now</Link>
+      <section className="cta-section" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2076&auto=format&fit=crop')" }}>
+        <div className="cta-overlay">
+          <div className="cta-content fade-in-up">
+            <div className="cta-accent-line"></div>
+            <span className="cta-label">Ready to Begin?</span>
+            <h2>Have a <span>project</span> in mind?</h2>
+            <p>We'd love to hear about your vision and help bring it to life with precision and excellence.</p>
+            <div className="cta-buttons">
+              <Link to="/contact" className="btn-gold">Contact Us Now</Link>
+              <Link to="/design" className="btn-outline-light">Explore Our Process</Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

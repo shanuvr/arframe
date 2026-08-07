@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ContactUs.css';
 
 const ContactUs = () => {
@@ -6,30 +6,63 @@ const ContactUs = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const [openFaq, setOpenFaq] = useState(0);
+
+  const faqs = [
+    {
+      id: 1,
+      question: "What is your typical project timeline?",
+      answer: "Timelines vary based on scope. Conceptual design and schematic drawings usually take 4-8 weeks, while full architectural planning and permit approval ranges from 3-6 months."
+    },
+    {
+      id: 2,
+      question: "Do you handle construction management?",
+      answer: "Yes. We offer end-to-end services from initial sketches to general contracting and final site inspection, ensuring total fidelity to the original design intent."
+    },
+    {
+      id: 3,
+      question: "Can we work with our own contractors?",
+      answer: "Absolutely. We frequently collaborate with external contractor teams, providing comprehensive technical drawings, specifications, and periodic site oversight."
+    },
+    {
+      id: 4,
+      question: "Do you undertake international projects?",
+      answer: "Yes. We serve clients globally. Our team coordinates remote site surveys, international building codes, and local regulatory compliance for seamless execution."
+    }
+  ];
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
+
   return (
     <div className="page-container">
+      {/* Page Hero */}
       <section className="page-hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Contact <span>Us</span></h1>
-            <p>Get in touch to discuss your next project</p>
+            <p>Get in touch to discuss your next architectural landmark</p>
           </div>
         </div>
       </section>
 
-      <section className="contact-section section-padding">
-        <div className="container">
+      {/* Main Contact Section */}
+      <section className="contact-section">
+        <div className="contact-container">
           <div className="contact-grid">
             
+            {/* Info Side */}
             <div className="contact-info fade-in-left">
-              <h2>Let's <span>Talk</span></h2>
-              <p className="contact-intro">Whether you have a question about our services, pricing, or anything else, our team is ready to answer all your questions.</p>
+              <span className="contact-label">Reach Out To Us</span>
+              <h2>Let's Start a <span>Conversation</span></h2>
+              <p className="contact-intro">Whether you have a question about our services, project estimates, or design consultations, our team is ready to assist you.</p>
               
               <div className="info-items">
                 <div className="info-item">
                   <div className="info-icon"><i className="fa-solid fa-location-dot"></i></div>
                   <div className="info-text">
-                    <h4>Office Location</h4>
+                    <h4>Headquarters</h4>
                     <p>123 Architecture Blvd, Design District, NY 10001</p>
                   </div>
                 </div>
@@ -37,66 +70,75 @@ const ContactUs = () => {
                 <div className="info-item">
                   <div className="info-icon"><i className="fa-solid fa-phone"></i></div>
                   <div className="info-text">
-                    <h4>Phone Number</h4>
-                    <p>+1 (555) 123-4567</p>
+                    <h4>Direct Call</h4>
+                    <p>+91 9712337226</p>
                   </div>
                 </div>
                 
                 <div className="info-item">
                   <div className="info-icon"><i className="fa-solid fa-envelope"></i></div>
                   <div className="info-text">
-                    <h4>Email Address</h4>
-                    <p>hello@aframebuilders.com</p>
+                    <h4>Email Inquiry</h4>
+                    <p>aframe.ind@gmail.com</p>
                   </div>
                 </div>
                 
                 <div className="info-item">
                   <div className="info-icon"><i className="fa-solid fa-clock"></i></div>
                   <div className="info-text">
-                    <h4>Working Hours</h4>
-                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                    <h4>Business Hours</h4>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                   </div>
                 </div>
               </div>
 
-              <div className="social-links mt-4">
-                <h4>Follow Us</h4>
+              <div className="social-links">
+                <h4>Connect With Us</h4>
                 <div className="social-icons">
-                  <a href="#"><i className="fa-brands fa-instagram"></i></a>
-                  <a href="#"><i className="fa-brands fa-linkedin-in"></i></a>
-                  <a href="#"><i className="fa-brands fa-twitter"></i></a>
-                  <a href="#"><i className="fa-brands fa-facebook-f"></i></a>
+                  <a href="#" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+                  <a href="#" aria-label="LinkedIn"><i className="fa-brands fa-linkedin-in"></i></a>
+                  <a href="#" aria-label="Twitter"><i className="fa-brands fa-twitter"></i></a>
+                  <a href="#" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
                 </div>
               </div>
             </div>
             
-            <div className="contact-form-container fade-in-right">
+            {/* Form Side */}
+            <div className="contact-form-card fade-in-right">
               <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
-                <h3>Send a Message</h3>
+                <h3>Send Us a Message</h3>
+                <p className="form-subtext">Fill in the form below and our lead architect will get back to you within 24 hours.</p>
                 
                 <div className="form-group">
-                  <input type="text" placeholder="Your Name" required />
+                  <label htmlFor="fullName">Your Full Name</label>
+                  <input id="fullName" type="text" placeholder="John Doe" required />
                 </div>
                 
                 <div className="form-group">
-                  <input type="email" placeholder="Your Email" required />
+                  <label htmlFor="emailAddr">Your Email Address</label>
+                  <input id="emailAddr" type="email" placeholder="john@example.com" required />
                 </div>
                 
                 <div className="form-group">
-                  <select required defaultValue="">
-                    <option value="" disabled>Subject of Inquiry</option>
+                  <label htmlFor="inquiryType">Subject of Inquiry</label>
+                  <select id="inquiryType" required defaultValue="">
+                    <option value="" disabled>Select inquiry type</option>
                     <option value="residential">Residential Architecture</option>
                     <option value="commercial">Commercial Architecture</option>
                     <option value="interior">Interior Design</option>
-                    <option value="other">Other</option>
+                    <option value="landscape">Landscape & Exterior</option>
+                    <option value="other">Other Inquiry</option>
                   </select>
                 </div>
                 
                 <div className="form-group">
-                  <textarea placeholder="Your Message" rows="5" required></textarea>
+                  <label htmlFor="msgText">Your Message</label>
+                  <textarea id="msgText" placeholder="Tell us about your project vision, timeline, and location..." rows="4" required></textarea>
                 </div>
                 
-                <button type="submit" className="btn-gold w-100">Send Message</button>
+                <button type="submit" className="btn-gold submit-btn">
+                  Send Message <i className="fa-solid fa-paper-plane" style={{ marginLeft: '8px' }}></i>
+                </button>
               </form>
             </div>
             
@@ -104,46 +146,54 @@ const ContactUs = () => {
         </div>
       </section>
 
+      {/* Map Section */}
       <section className="map-section">
-        <div className="map-container fade-in-up">
-          {/* Google Maps Embed Placeholder */}
+        <div className="map-wrapper fade-in-up">
           <iframe 
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.1583091352!2d-74.11976373946229!3d40.69766374859258!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1683935292305!5m2!1sen!2s" 
             width="100%" 
-            height="450" 
+            height="100%" 
             style={{ border: 0 }} 
             allowFullScreen="" 
             loading="lazy" 
             referrerPolicy="no-referrer-when-downgrade"
-            title="Google Maps"
+            title="Google Maps Location"
           ></iframe>
         </div>
       </section>
       
-      <section className="faq-section section-padding" style={{ backgroundColor: 'var(--black-light)' }}>
-        <div className="container">
+      {/* FAQ Section */}
+      <section className="faq-section">
+        <div className="faq-container">
           <div className="section-header text-center fade-in-up">
+            <span className="faq-label">Got Questions?</span>
             <h2>Frequently Asked <span>Questions</span></h2>
-            <p className="subtitle">Find answers to common questions about our services</p>
+            <p className="subtitle">Find quick answers to common inquiries about working with AFRAME Builders.</p>
           </div>
           
-          <div className="faq-grid fade-in-up">
-            <div className="faq-item">
-              <h4>What is your typical project timeline?</h4>
-              <p>Project timelines vary greatly depending on scope and scale. A typical residential design process takes 3-6 months, while commercial projects can take 6-12 months or more before construction begins.</p>
-            </div>
-            <div className="faq-item">
-              <h4>Do you handle the construction phase as well?</h4>
-              <p>Yes, we offer comprehensive construction management services to ensure the design is executed exactly as planned, managing contractors and overseeing quality control.</p>
-            </div>
-            <div className="faq-item">
-              <h4>Can we use our own contractors?</h4>
-              <p>Absolutely. While we have a network of trusted contractors, we are happy to work with your preferred builders and provide architectural oversight during the process.</p>
-            </div>
-            <div className="faq-item">
-              <h4>Do you work on international projects?</h4>
-              <p>Yes, we have a portfolio of international projects. Our team is equipped to handle design and planning for locations worldwide, adapting to local codes and environments.</p>
-            </div>
+          <div className="faq-accordion fade-in-up">
+            {faqs.map((faq, index) => (
+              <div 
+                className={`accordion-item ${openFaq === index ? 'active' : ''}`} 
+                key={faq.id}
+              >
+                <button 
+                  className="accordion-header" 
+                  onClick={() => toggleFaq(index)}
+                  aria-expanded={openFaq === index}
+                >
+                  <span className="faq-question">{faq.question}</span>
+                  <span className="accordion-icon">
+                    <i className={`fa-solid ${openFaq === index ? 'fa-minus' : 'fa-plus'}`}></i>
+                  </span>
+                </button>
+                <div className="accordion-body">
+                  <div className="accordion-content">
+                    <p>{faq.answer}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

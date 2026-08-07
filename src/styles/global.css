@@ -170,6 +170,9 @@ h4,
     inset: 0;
     background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55));
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .page-hero .hero-content {

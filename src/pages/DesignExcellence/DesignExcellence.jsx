@@ -79,11 +79,18 @@ const DesignExcellencePage = () => {
         </div>
       </section>
 
-      <section className="cta-section section-padding text-center">
-        <div className="container">
-          <h2>Start your design journey</h2>
-          <p>Let's collaborate to create something extraordinary.</p>
-          <Link to="/contact" className="btn-gold mt-4">Book a Consultation</Link>
+      <section className="cta-section" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2070&auto=format&fit=crop')" }}>
+        <div className="cta-overlay">
+          <div className="cta-content fade-in-up">
+            <div className="cta-accent-line"></div>
+            <span className="cta-label">Let's Build Together</span>
+            <h2>Start your <span>design journey</span></h2>
+            <p>Let's collaborate to create something extraordinary — from concept to completion.</p>
+            <div className="cta-buttons">
+              <Link to="/contact" className="btn-gold">Book a Consultation</Link>
+              <Link to="/projects" className="btn-outline-light">View Our Work</Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -80,11 +80,18 @@ const AboutUs = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section section-padding text-center">
-        <div className="container">
-          <h2>Ready to build your dream project?</h2>
-          <p>Contact our experts today for a consultation.</p>
-          <Link to="/contact" className="btn-gold mt-4">Get in Touch</Link>
+      <section className="cta-section">
+        <div className="cta-overlay">
+          <div className="cta-content fade-in-up">
+            <div className="cta-accent-line"></div>
+            <span className="cta-label">Turn Vision Into Reality</span>
+            <h2>Ready to build your <span>dream project</span>?</h2>
+            <p>Contact our team of expert architects and builders for a personalized consultation.</p>
+            <div className="cta-buttons">
+              <Link to="/contact" className="btn-gold">Get in Touch</Link>
+              <Link to="/projects" className="btn-outline-light">Browse Projects</Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

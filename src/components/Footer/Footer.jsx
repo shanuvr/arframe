@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
     const quickLinks = [
-        { label: 'Home', href: '#' },
-        { label: 'About Us', href: '#about' },
-        { label: 'Design Excellence', href: '#design' },
-        { label: 'Projects', href: '#projects' },
+        { label: 'Home', to: '/' },
+        { label: 'About Us', to: '/about' },
+        { label: 'Design Excellence', to: '/design' },
+        { label: 'Projects', to: '/projects' },
     ];
 
     const services = [
@@ -18,15 +19,15 @@ const Footer = () => {
 
     return (
         <footer className="footer">
-            <div className="container footer-grid">
+            <div className="footer-grid">
                 <div className="footer-brand">
-                    <div className="logo-container">
-                        <i className="fa-solid fa-compass-drafting logo-icon"></i>
-                        <div className="logo-text" style={{ color: '#fff' }}>
+                    <Link to="/" className="footer-logo-container">
+                        <i className="fa-solid fa-compass-drafting footer-logo-icon"></i>
+                        <div className="footer-logo-text">
                             AFRAME
-                            <span style={{ color: '#888' }}>BUILDERS</span>
+                            <span>BUILDERS</span>
                         </div>
-                    </div>
+                    </Link>
                     <p>
                         A Frame To Transcend Time. Designing and constructing timeless spaces with precision, passion and
                         perfection.
@@ -38,7 +39,7 @@ const Footer = () => {
                     <ul>
                         {quickLinks.map((link, index) => (
                             <li key={index}>
-                                <a href={link.href}>{link.label}</a>
+                                <Link to={link.to}>{link.label}</Link>
                             </li>
                         ))}
                     </ul>
@@ -57,18 +58,18 @@ const Footer = () => {
 
                 <div className="footer-col">
                     <h5>Contact Info</h5>
-                    <p style={{ color: '#888', fontSize: '13px', marginBottom: '10px' }}>
-                        <i className="fa-solid fa-phone" style={{ color: 'var(--primary)', marginRight: '5px' }}></i> +91
-                        9712337226
-                    </p>
-                    <p style={{ color: '#888', fontSize: '13px' }}>
-                        <i className="fa-solid fa-envelope" style={{ color: 'var(--primary)', marginRight: '5px' }}></i>
-                        aframe.ind@gmail.com
-                    </p>
+                    <div className="footer-contact-item">
+                        <i className="fa-solid fa-phone"></i>
+                        <span>+91 9712337226</span>
+                    </div>
+                    <div className="footer-contact-item">
+                        <i className="fa-solid fa-envelope"></i>
+                        <span>aframe.ind@gmail.com</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="container" style={{ padding: '0' }}>
+            <div className="footer-bottom-bar">
                 <div className="footer-bottom">
                     <p>&copy; 2026 Aframe Builders. All Rights Reserved.</p>
                     <div className="footer-bottom-links">
