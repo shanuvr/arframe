@@ -38,7 +38,7 @@ const ContactUs = () => {
   return (
     <div className="page-container">
       {/* Page Hero */}
-      <section className="page-hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/1784712263786%281%29.png')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Contact <span>Us</span></h1>

@@ -8,17 +8,17 @@ const Projects = () => {
   }, []);
 
   const projectsData = [
-    { id: 1, title: 'The Glass House', category: 'Luxury Villas', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop' },
-    { id: 2, title: 'Nexus Corporate HQ', category: 'Commercial', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop' },
-    { id: 3, title: 'Minimalist Haven', category: 'Interiors', image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop' },
-    { id: 4, title: 'Azure Heights', category: 'Luxury Villas', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop' },
-    { id: 5, title: 'Apex Tower', category: 'Commercial', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop' },
-    { id: 6, title: 'Urban Loft', category: 'Interiors', image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop' },
+    { id: 1, title: 'The Glass House', category: 'Luxury Villas', image: '/1784132288077%281%29.png' },
+    { id: 2, title: 'Nexus Corporate HQ', category: 'Commercial', image: '/1784189865361%281%29.png' },
+    { id: 3, title: 'Minimalist Haven', category: 'Interiors', image: '/1784193892122%281%29.png' },
+    { id: 4, title: 'Azure Heights', category: 'Luxury Villas', image: '/1784197586258%281%29.png' },
+    { id: 5, title: 'Apex Tower', category: 'Commercial', image: '/1784198356718%281%29.png' },
+    { id: 6, title: 'Urban Loft', category: 'Interiors', image: '/1784708893596%281%29.png' },
   ];
 
   return (
     <div className="page-container">
-      <section className="page-hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/1784717375498%281%29.png')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Our <span>Projects</span></h1>
@@ -46,7 +46,7 @@ const Projects = () => {
         </div>
       </section>
       
-      <section className="cta-section" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2076&auto=format&fit=crop')" }}>
+      <section className="cta-section" style={{ backgroundImage: "url('/52138.jpeg')" }}>
         <div className="cta-overlay">
           <div className="cta-content fade-in-up">
             <div className="cta-accent-line"></div>

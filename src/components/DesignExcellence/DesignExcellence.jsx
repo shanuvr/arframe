@@ -10,15 +10,15 @@ const DesignExcellence = () => {
 
     const visualCards = [
         {
-            img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80',
+            img: '/1784708893596%281%29.png',
             title: 'Concept Sketch',
         },
         {
-            img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80',
+            img: '/1784711581942%281%29.png',
             title: '3D Visualization',
         },
         {
-            img: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=400&q=80',
+            img: '/1784712263786%281%29.png',
             title: 'Finished Project',
         },
     ];

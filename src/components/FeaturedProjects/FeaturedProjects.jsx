@@ -4,17 +4,17 @@ import './FeaturedProjects.css';
 const FeaturedProjects = () => {
     const projects = [
         {
-            img: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=500&q=80',
+            img: '/1784716807588%281%29%281%29.png',
             title: 'Contemporary Residence',
             location: 'Thrissur, Kerala | 3000 Sq.Ft',
         },
         {
-            img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=500&q=80',
+            img: '/1784717375498%281%29.png',
             title: 'Raabta Luxury Villa',
             location: 'Thrissur, Kerala | 2400 Sq.Ft',
         },
         {
-            img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=500&q=80',
+            img: '/52138.jpeg',
             title: 'Aaswatham Premium',
             location: 'Thrissur, Kerala | 3200 Sq.Ft',
         },

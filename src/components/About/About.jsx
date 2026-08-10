@@ -14,7 +14,7 @@ const About = () => {
             <div className="container grid-2">
                 <div className="about-image">
                     <img
-                        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80"
+                        src="/1784132288077%281%29.png"
                         alt="Modern Mansion Architecture"
                     />
                 </div>

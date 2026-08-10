@@ -4,19 +4,19 @@ import './BeforeAfter.css';
 const BeforeAfter = () => {
     const transformations = [
         {
-            img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=400&q=80',
+            img: '/1784711581942%281%29.png',
             title: 'Old House Renovation',
         },
         {
-            img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=400&q=80',
+            img: '/sharon1%20%286%29%281%29.jpg',
             title: 'Empty Plot To Luxury Villa',
         },
         {
-            img: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=400&q=80',
+            img: '/sharon1%20%289%29.jpg',
             title: 'Structure To Completion',
         },
         {
-            img: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=400&q=80',
+            img: '/1784132288077%281%29.png',
             title: 'Interior Transformation',
         },
     ];

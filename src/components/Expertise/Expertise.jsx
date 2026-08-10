@@ -4,32 +4,32 @@ import './Expertise.css';
 const Expertise = () => {
     const services = [
         {
-            img: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=500&q=80',
+            img: '/1784187873891%281%29.png',
             icon: 'fa-solid fa-house',
             title: 'Residential Construction',
         },
         {
-            img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80',
+            img: '/1784189865361%281%29.png',
             icon: 'fa-solid fa-building',
             title: 'Commercial Construction',
         },
         {
-            img: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=500&q=80',
+            img: '/1784192661079%281%29.png',
             icon: 'fa-solid fa-pen-ruler',
             title: 'Architecture & Planning',
         },
         {
-            img: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=500&q=80',
+            img: '/1784193892122%281%29.png',
             icon: 'fa-solid fa-couch',
             title: 'Interior Design',
         },
         {
-            img: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=500&q=80',
+            img: '/1784197586258%281%29.png',
             icon: 'fa-solid fa-hammer',
             title: 'Renovation & Remodeling',
         },
         {
-            img: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=500&q=80',
+            img: '/1784198356718%281%29.png',
             icon: 'fa-solid fa-helmet-safety',
             title: 'Project Management',
         },

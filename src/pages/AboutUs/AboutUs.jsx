@@ -10,7 +10,7 @@ const AboutUs = () => {
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <section className="page-hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/1784716807588%281%29%281%29.png')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>About <span>Us</span></h1>
@@ -29,7 +29,7 @@ const AboutUs = () => {
               <p>Our team of visionary architects, meticulous engineers, and passionate designers work collaboratively to bring extraordinary concepts to life.</p>
             </div>
             <div className="story-image fade-in-right">
-              <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2071&auto=format&fit=crop" alt="Modern Architecture Office" />
+              <img src="/1784192661079%281%29.png" alt="Modern Architecture Office" />
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@ const AboutUs = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="stats-section section-padding" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop')" }}>
+      <section className="stats-section section-padding" style={{ backgroundImage: "url('/1784187873891%281%29.png')" }}>
         <div className="stats-overlay">
           <div className="container">
             <div className="stats-grid">
