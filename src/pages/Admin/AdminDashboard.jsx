@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 
@@ -6,6 +6,13 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('projects'); // 'projects' | 'design'
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        const userId = localStorage.getItem('user_id');
+        if (!userId) {
+            navigate('/admin', { replace: true });
+        }
+    }, [navigate]);
 
     // Static Data: Projects (3 static items)
     const [projects, setProjects] = useState([

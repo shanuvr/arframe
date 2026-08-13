@@ -1,20 +1,63 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './DesignExcellence.css';
 import { Link } from 'react-router-dom';
+import api from '../../api/axios.js';
+
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
 
 const DesignExcellencePage = () => {
+  const [services, setServices] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const loaderRef = useRef(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const services = [
-    { icon: 'fa-pen-ruler', title: 'Architecture Services', desc: 'Conceptual design, schematic development, and construction documents.' },
-    { icon: 'fa-couch', title: 'Interior Design', desc: 'Curating bespoke interiors that harmonize with architectural aesthetics.' },
-    { icon: 'fa-tree-city', title: 'Exterior Design', desc: 'Crafting stunning facades and sustainable landscaping solutions.' },
-    { icon: 'fa-vr-cardboard', title: '3D Visualization', desc: 'Immersive virtual reality walkthroughs and photorealistic renders.' },
-    { icon: 'fa-map-location-dot', title: 'Master Planning', desc: 'Strategic land use, zoning analysis, and large-scale urban planning.' },
-    { icon: 'fa-helmet-safety', title: 'Construction Management', desc: 'Ensuring seamless execution from groundbreaking to final handover.' },
-  ];
+  const fetchServices = useCallback(async (pageNum) => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/api/design-excellence?page=${pageNum}&limit=6`);
+      if (response.data) {
+        const newItems = response.data.data || [];
+        setServices(prev => pageNum === 1 ? newItems : [...prev, ...newItems]);
+        setPage(response.data.page || 1);
+        setHasMore(pageNum < (response.data.totalPages || 1));
+      }
+    } catch (err) {
+      console.error('Failed to fetch design excellence:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchServices(1);
+  }, [fetchServices]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          fetchServices(page + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [page, hasMore, loading, fetchServices]);
 
   const process = [
     { step: '01', title: 'Consultation & Briefing', desc: 'Understanding your vision, requirements, and constraints.' },
@@ -43,12 +86,33 @@ const DesignExcellencePage = () => {
           
           <div className="services-grid">
             {services.map((service, index) => (
-              <div className="service-card fade-in-up" key={index} style={{ animationDelay: `${index * 0.1}s` }}>
-                <i className={`fa-solid ${service.icon} service-icon`}></i>
-                <h3>{service.title}</h3>
-                <p>{service.desc}</p>
+              <div className="service-card fade-in-up" key={service.id || index} style={{ animationDelay: `${index * 0.1}s` }}>
+                <div className="service-image-wrap" style={{ width: '100%', height: '220px', borderRadius: '12px', overflow: 'hidden', marginBottom: '20px', border: '2px solid rgba(212, 175, 55, 0.2)' }}>
+                  <img
+                    src={service.excellence_image ? `${IMAGE_BASE_URL}${service.excellence_image}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'}
+                    alt={service.excellence_name || 'Service'}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                </div>
+                <h3>{service.excellence_name}</h3>
+                <p>{service.excellence_description}</p>
               </div>
             ))}
+          </div>
+
+          <div ref={loaderRef} style={{ textAlign: 'center', padding: '40px 20px 0 20px' }}>
+            {loading && (
+              <div>
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '28px', color: '#d4af37' }}></i>
+                <p style={{ marginTop: '12px', color: '#6b7280' }}>Loading more services...</p>
+              </div>
+            )}
+            {!hasMore && services.length > 0 && (
+              <p style={{ color: '#9ca3af', fontSize: '14px' }}>— You've reached the end —</p>
+            )}
+            {!loading && services.length === 0 && (
+              <p style={{ color: '#6b7280', fontSize: '16px', padding: '40px 0' }}>No services found.</p>
+            )}
           </div>
         </div>
       </section>

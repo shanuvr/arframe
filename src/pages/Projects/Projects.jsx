@@ -1,20 +1,63 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './Projects.css';
 import { Link } from 'react-router-dom';
+import api from '../../api/axios.js';
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const loaderRef = useRef(null);
+
+  const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const projectsData = [
-    { id: 1, title: 'The Glass House', category: 'Luxury Villas', image: '/1784132288077%281%29.png' },
-    { id: 2, title: 'Nexus Corporate HQ', category: 'Commercial', image: '/1784189865361%281%29.png' },
-    { id: 3, title: 'Minimalist Haven', category: 'Interiors', image: '/1784193892122%281%29.png' },
-    { id: 4, title: 'Azure Heights', category: 'Luxury Villas', image: '/1784197586258%281%29.png' },
-    { id: 5, title: 'Apex Tower', category: 'Commercial', image: '/1784198356718%281%29.png' },
-    { id: 6, title: 'Urban Loft', category: 'Interiors', image: '/1784708893596%281%29.png' },
-  ];
+  const fetchProjects = useCallback(async (pageNum) => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/api/projects?page=${pageNum}&limit=6`);
+      if (response.data) {
+        const newProjects = response.data.data || [];
+        setProjects(prev => pageNum === 1 ? newProjects : [...prev, ...newProjects]);
+        setPage(response.data.page || 1);
+        setHasMore(pageNum < (response.data.totalPages || 1));
+      }
+    } catch (err) {
+      console.error('Failed to fetch projects:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProjects(1);
+  }, [fetchProjects]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          fetchProjects(page + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [page, hasMore, loading, fetchProjects]);
 
   return (
     <div className="page-container">
@@ -30,18 +73,35 @@ const Projects = () => {
       <section className="projects-section section-padding">
         <div className="container">
           <div className="projects-masonry">
-            {projectsData.map((project, index) => (
+            {projects.map((project, index) => (
               <div className="project-item fade-in-up" key={project.id} style={{ animationDelay: `${(index % 3) * 0.1}s` }}>
-                <img src={project.image} alt={project.title} />
+                <img
+                  src={project.project_image ? `${IMAGE_BASE_URL}${project.project_image}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}
+                  alt={project.project_name}
+                />
                 <div className="project-overlay">
                   <div className="project-info">
-                    <span className="project-category">{project.category}</span>
-                    <h3>{project.title}</h3>
-                    <button className="view-btn">View Details <i className="fa-solid fa-arrow-right"></i></button>
+                    <span className="project-category">{project.category_name}</span>
+                    <h3>{project.project_name}</h3>
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+
+          <div ref={loaderRef} style={{ textAlign: 'center', padding: '40px 20px' }}>
+            {loading && (
+              <div>
+                <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '28px', color: '#d4af37' }}></i>
+                <p style={{ marginTop: '12px', color: '#6b7280' }}>Loading more projects...</p>
+              </div>
+            )}
+            {!hasMore && projects.length > 0 && (
+              <p style={{ color: '#9ca3af', fontSize: '14px' }}>— You've reached the end —</p>
+            )}
+            {!loading && projects.length === 0 && (
+              <p style={{ color: '#6b7280', fontSize: '16px', padding: '40px 0' }}>No projects found.</p>
+            )}
           </div>
         </div>
       </section>

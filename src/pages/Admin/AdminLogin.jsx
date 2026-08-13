@@ -1,16 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../../api/axios.js';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    useEffect(() => {
+        const userId = localStorage.getItem('user_id');
+        if (userId) {
+            navigate('/admin/projects', { replace: true });
+        }
+    }, [navigate]);
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Redirect to Admin Projects Page
-        navigate('/admin/projects');
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await api.post('/api/login', {
+                username: username,
+                password: password
+            });
+
+            if (response.data && response.data.message === 'Login successful') {
+                localStorage.setItem('user_id', response.data.user_id);
+                navigate('/admin/projects', { replace: true });
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Login failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -28,17 +54,31 @@ const AdminLogin = () => {
                     <h3>Admin Sign In</h3>
                     <p className="form-subtitle">Enter your authorization credentials to manage site content.</p>
 
+                    {error && (
+                        <div className="login-error" style={{
+                            background: 'rgba(220, 38, 38, 0.1)',
+                            color: '#dc2626',
+                            padding: '12px 16px',
+                            borderRadius: '8px',
+                            marginBottom: '20px',
+                            fontSize: '14px',
+                            border: '1px solid rgba(220, 38, 38, 0.3)'
+                        }}>
+                            <i className="fa-solid fa-circle-exclamation" style={{ marginRight: '8px' }}></i>
+                            {error}
+                        </div>
+                    )}
+
                     <div className="form-group">
-                        <label htmlFor="adminEmail">Email Address</label>
+                        <label htmlFor="adminUsername">Username</label>
                         <div className="input-icon-wrapper">
-                            <i className="fa-solid fa-envelope input-icon"></i>
+                            <i className="fa-solid fa-user input-icon"></i>
                             <input 
-                                id="adminEmail"
-                                type="email" 
-                                placeholder="admin@aframebuilders.com" 
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)}
-                                required 
+                                id="adminUsername"
+                                type="text" 
+                                placeholder="Enter username" 
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </div>
                     </div>
@@ -53,13 +93,21 @@ const AdminLogin = () => {
                                 placeholder="••••••••••••" 
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                required 
                             />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-gold login-submit-btn">
-                        Sign In to Dashboard <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
+                    <button type="submit" className="btn-gold login-submit-btn" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: '8px' }}></i>
+                                Signing In...
+                            </>
+                        ) : (
+                            <>
+                                Sign In to Dashboard <i className="fa-solid fa-arrow-right" style={{ marginLeft: '8px' }}></i>
+                            </>
+                        )}
                     </button>
                 </form>
 
