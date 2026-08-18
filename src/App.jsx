@@ -4,6 +4,7 @@ import './styles/global.css';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
+import ProtectedRoute from './components/Admin/ProtectedRoute';
 
 const Home = lazy(() => import('./pages/Home'));
 const AboutUs = lazy(() => import('./pages/AboutUs/AboutUs'));
@@ -29,11 +30,15 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<ContactUs />} />
           
-          {/* Admin Routes */}
+          {/* Public Admin Route */}
           <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
-          <Route path="/admin/projects" element={<AdminProjects />} />
-          <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
+
+          {/* Protected Admin Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
+            <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
+          </Route>
         </Routes>
       </Suspense>
       {!isAdminRoute && <Footer />}

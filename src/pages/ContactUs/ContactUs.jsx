@@ -1,10 +1,56 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api/axios.js';
 import './ContactUs.css';
 
 const ContactUs = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const [formData, setFormData] = useState({
+    full_name: '',
+    email: '',
+    subject: 'Project Enquiry',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ type: '', message: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus({ type: '', message: '' });
+
+    try {
+      const response = await api.post('/api/contact', formData);
+      setStatus({
+        type: 'success',
+        message: response.data?.message || 'Enquiry sent successfully!'
+      });
+      setFormData({
+        full_name: '',
+        email: '',
+        subject: 'Project Enquiry',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      setStatus({
+        type: 'error',
+        message: error.response?.data?.message || error.response?.data?.error || 'Failed to send message. Please try again.'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [openFaq, setOpenFaq] = useState(0);
 
@@ -105,40 +151,76 @@ const ContactUs = () => {
             
             {/* Form Side */}
             <div className="contact-form-card fade-in-right">
-              <form className="contact-form" onSubmit={(e) => e.preventDefault()}>
+              <form className="contact-form" onSubmit={handleSubmit}>
                 <h3>Send Us a Message</h3>
                 <p className="form-subtext">Fill in the form below and our lead architect will get back to you within 24 hours.</p>
                 
                 <div className="form-group">
                   <label htmlFor="fullName">Your Full Name</label>
-                  <input id="fullName" type="text" placeholder="John Doe" required />
+                  <input
+                    id="fullName"
+                    name="full_name"
+                    type="text"
+                    placeholder="John Doe"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="emailAddr">Your Email Address</label>
-                  <input id="emailAddr" type="email" placeholder="john@example.com" required />
+                  <input
+                    id="emailAddr"
+                    name="email"
+                    type="email"
+                    placeholder="john@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="inquiryType">Subject of Inquiry</label>
-                  <select id="inquiryType" required defaultValue="">
-                    <option value="" disabled>Select inquiry type</option>
-                    <option value="residential">Residential Architecture</option>
-                    <option value="commercial">Commercial Architecture</option>
-                    <option value="interior">Interior Design</option>
-                    <option value="landscape">Landscape & Exterior</option>
-                    <option value="other">Other Inquiry</option>
+                  <select
+                    id="inquiryType"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="Project Enquiry">Project Enquiry</option>
+                    <option value="Residential Architecture">Residential Architecture</option>
+                    <option value="Commercial Architecture">Commercial Architecture</option>
+                    <option value="Interior Design">Interior Design</option>
+                    <option value="Landscape & Exterior">Landscape & Exterior</option>
+                    <option value="Other Inquiry">Other Inquiry</option>
                   </select>
                 </div>
                 
                 <div className="form-group">
                   <label htmlFor="msgText">Your Message</label>
-                  <textarea id="msgText" placeholder="Tell us about your project vision, timeline, and location..." rows="4" required></textarea>
+                  <textarea
+                    id="msgText"
+                    name="message"
+                    placeholder="Tell us about your project vision, timeline, and location..."
+                    rows="4"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                  ></textarea>
                 </div>
                 
-                <button type="submit" className="btn-gold submit-btn">
-                  Send Message <i className="fa-solid fa-paper-plane" style={{ marginLeft: '8px' }}></i>
+                <button type="submit" className="btn-gold submit-btn" disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Message'} <i className="fa-solid fa-paper-plane" style={{ marginLeft: '8px' }}></i>
                 </button>
+
+                {status.message && (
+                  <div className={`status-alert ${status.type}`} style={{ marginTop: '15px', padding: '10px 14px', borderRadius: '4px', textAlign: 'center', fontSize: '14px', fontWeight: '500', backgroundColor: status.type === 'success' ? 'rgba(40,167,69,0.15)' : 'rgba(220,53,69,0.15)', color: status.type === 'success' ? '#28a745' : '#dc3545', border: status.type === 'success' ? '1px solid rgba(40,167,69,0.3)' : '1px solid rgba(220,53,69,0.3)' }}>
+                    {status.message}
+                  </div>
+                )}
               </form>
             </div>
             

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import './AdminLayout.css';
 
@@ -6,8 +6,16 @@ const AdminLayout = ({ children, title }) => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    useEffect(() => {
+        const userId = localStorage.getItem('user_id');
+        if (!userId) {
+            navigate('/admin', { replace: true });
+        }
+    }, [navigate]);
+
     const handleLogout = () => {
-        navigate('/admin');
+        localStorage.removeItem('user_id');
+        navigate('/admin', { replace: true });
     };
 
     return (

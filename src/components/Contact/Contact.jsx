@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import api from '../../api/axios.js';
 import './Contact.css';
 
 const Contact = ({ alignTop = false }) => {
     const [formData, setFormData] = useState({
-        name: '',
+        full_name: '',
         phone: '',
         email: '',
-        service: 'Residential Construction',
+        subject: 'Project Enquiry',
         message: '',
     });
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({ type: '', message: '' });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,17 +21,40 @@ const Contact = ({ alignTop = false }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Add your form submission logic here
-        setFormData({
-            name: '',
-            phone: '',
-            email: '',
-            service: 'Residential Construction',
-            message: '',
-        });
+        setLoading(true);
+        setStatus({ type: '', message: '' });
+
+        const payload = {
+            full_name: formData.full_name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.phone ? `${formData.message}\n\n(Phone: ${formData.phone})`.trim() : formData.message,
+        };
+
+        try {
+            const response = await api.post('/api/contact', payload);
+            setStatus({
+                type: 'success',
+                message: response.data?.message || 'Enquiry sent successfully!',
+            });
+            setFormData({
+                full_name: '',
+                phone: '',
+                email: '',
+                subject: 'Project Enquiry',
+                message: '',
+            });
+        } catch (error) {
+            console.error('Contact form submission error:', error);
+            setStatus({
+                type: 'error',
+                message: error.response?.data?.message || error.response?.data?.error || 'Failed to send message. Please try again.',
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -41,9 +67,9 @@ const Contact = ({ alignTop = false }) => {
                             <input
                                 type="text"
                                 className="form-control"
-                                placeholder="Your Name"
-                                name="name"
-                                value={formData.name}
+                                placeholder="Your Full Name"
+                                name="full_name"
+                                value={formData.full_name}
                                 onChange={handleChange}
                                 required
                             />
@@ -66,13 +92,15 @@ const Contact = ({ alignTop = false }) => {
                             />
                             <select
                                 className="form-control"
-                                name="service"
-                                value={formData.service}
+                                name="subject"
+                                value={formData.subject}
                                 onChange={handleChange}
+                                required
                             >
-                                <option>Residential Construction</option>
-                                <option>Commercial Building</option>
-                                <option>Interior Architecture</option>
+                                <option value="Project Enquiry">Project Enquiry</option>
+                                <option value="Residential Construction">Residential Construction</option>
+                                <option value="Commercial Building">Commercial Building</option>
+                                <option value="Interior Architecture">Interior Architecture</option>
                             </select>
                             <textarea
                                 className="form-control"
@@ -81,11 +109,17 @@ const Contact = ({ alignTop = false }) => {
                                 name="message"
                                 value={formData.message}
                                 onChange={handleChange}
+                                required
                             ></textarea>
                         </div>
-                        <button type="submit" className="btn-gold" style={{ width: '100%' }}>
-                            Send Message
+                        <button type="submit" className="btn-gold" style={{ width: '100%' }} disabled={loading}>
+                            {loading ? 'Sending...' : 'Send Message'}
                         </button>
+                        {status.message && (
+                            <div className={`status-alert ${status.type}`}>
+                                {status.message}
+                            </div>
+                        )}
                     </form>
                 </div>
 
