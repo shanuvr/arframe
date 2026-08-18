@@ -29,12 +29,9 @@ const AdminLayout = ({ children, title }) => {
             {/* Light Theme Sidebar */}
             <aside className={`admin-sidebar ${isSidebarOpen ? 'active' : ''}`}>
                 <div className="sidebar-brand">
-                    <div className="brand-logo-group">
-                        <i className="fa-solid fa-compass-drafting logo-icon"></i>
-                        <div className="logo-text">
-                            AFRAME
-                            <span>ADMIN PORTAL</span>
-                        </div>
+                    <div className="brand-logo-group" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+                        <img src="/logo/logodark.png" alt="Aframe Builders Logo" className="admin-logo-img" />
+                        <span style={{ fontSize: '9px', letterSpacing: '2px', color: '#b58500', fontWeight: 'bold', textTransform: 'uppercase', paddingLeft: '2px' }}>Admin Portal</span>
                     </div>
                     <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
                         <i className="fa-solid fa-xmark"></i>

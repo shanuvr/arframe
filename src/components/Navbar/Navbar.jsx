@@ -12,11 +12,7 @@ const Navbar = () => {
         <>
             <nav className="navbar">
                 <Link to="/" className="logo-container" onClick={closeMenu}>
-                    <i className="fa-solid fa-compass-drafting logo-icon"></i>
-                    <div className="logo-text">
-                        AFRAME
-                        <span>BUILDERS</span>
-                    </div>
+                    <img src="/logo/logowhite.png" alt="Aframe Builders Logo" className="logo-img" />
                 </Link>
                 
                 <div className={`menu-toggle ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu} aria-label="Toggle navigation">
@@ -41,11 +37,7 @@ const Navbar = () => {
             <div className={`mobile-drawer ${isMenuOpen ? 'active' : ''}`}>
                 <div className="drawer-header">
                     <Link to="/" className="logo-container" onClick={closeMenu}>
-                        <i className="fa-solid fa-compass-drafting logo-icon"></i>
-                        <div className="logo-text">
-                            AFRAME
-                            <span>BUILDERS</span>
-                        </div>
+                        <img src="/logo/logowhite.png" alt="Aframe Builders Logo" className="logo-img" />
                     </Link>
                     <button className="drawer-close-btn" onClick={closeMenu} aria-label="Close menu">
                         <i className="fa-solid fa-xmark"></i>

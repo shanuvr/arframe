@@ -17,6 +17,13 @@
     gap: 10px;
 }
 
+.logo-img {
+    height: 58px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 .logo-icon {
     font-size: 28px;
     color: var(--primary);

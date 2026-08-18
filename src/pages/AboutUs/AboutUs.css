@@ -255,6 +255,27 @@
   flex-wrap: wrap;
 }
 
+.btn-outline-light {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  padding: 14px 28px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 2px;
+  display: inline-block;
+  transition: var(--transition);
+}
+
+.btn-outline-light:hover {
+  background: #ffffff;
+  color: var(--dark);
+  border-color: #ffffff;
+}
+
 /* Animations */
 .fade-in-up {
   animation: fadeInUp 1s ease forwards;

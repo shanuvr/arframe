@@ -22,11 +22,7 @@ const Footer = () => {
             <div className="footer-grid">
                 <div className="footer-brand">
                     <Link to="/" className="footer-logo-container">
-                        <i className="fa-solid fa-compass-drafting footer-logo-icon"></i>
-                        <div className="footer-logo-text">
-                            AFRAME
-                            <span>BUILDERS</span>
-                        </div>
+                        <img src="/logo/logowhite.png" alt="Aframe Builders Logo" className="footer-logo-img" />
                     </Link>
                     <p>
                         A Frame To Transcend Time. Designing and constructing timeless spaces with precision, passion and

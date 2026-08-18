@@ -45,9 +45,8 @@ const AdminLogin = () => {
             
             <div className="login-card fade-in-up">
                 <div className="login-brand">
-                    <i className="fa-solid fa-compass-drafting brand-icon"></i>
-                    <h2>AFRAME <span>BUILDERS</span></h2>
-                    <p className="admin-badge">Control Center</p>
+                    <img src="/logo/logodark.png" alt="Aframe Builders Logo" className="login-logo-img" />
+                    <p className="admin-badge" style={{ marginTop: '12px' }}>Control Center</p>
                 </div>
 
                 <form className="login-form" onSubmit={handleLogin}>
