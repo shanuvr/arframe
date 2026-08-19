@@ -11,10 +11,10 @@ const Footer = () => {
     ];
 
     const services = [
-        { label: 'Residential', href: '#' },
-        { label: 'Commercial', href: '#' },
-        { label: 'Architecture', href: '#' },
-        { label: 'Interior Design', href: '#' },
+        { label: 'Residential', to: '/design' },
+        { label: 'Commercial', to: '/design' },
+        { label: 'Architecture', to: '/design' },
+        { label: 'Interior Design', to: '/design' },
     ];
 
     return (
@@ -46,7 +46,7 @@ const Footer = () => {
                     <ul>
                         {services.map((service, index) => (
                             <li key={index}>
-                                <a href={service.href}>{service.label}</a>
+                                <Link to={service.to}>{service.label}</Link>
                             </li>
                         ))}
                     </ul>

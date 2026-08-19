@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './FeaturedProjects.css';
 
 const FeaturedProjects = () => {
@@ -28,9 +29,9 @@ const FeaturedProjects = () => {
                         <span className="section-subtitle">OUR WORKS</span>
                         <h2>Featured Projects</h2>
                     </div>
-                    <a href="#projects" className="view-all-link">
+                    <Link to="/projects" className="view-all-link">
                         View All Projects <i className="fa-solid fa-arrow-right"></i>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="projects-grid">

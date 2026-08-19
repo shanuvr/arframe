@@ -1,3 +1,22 @@
+/* ===== PAGE HERO ===== */
+.page-hero .hero-content h1 {
+  color: #ffffff;
+  font-size: 3.5rem;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.page-hero .hero-content h1 span {
+  color: var(--primary);
+}
+
+.page-hero .hero-content p {
+  font-size: 1.2rem;
+  color: #ffffff;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 /* ===== MAIN CONTACT SECTION ===== */
 .contact-section {
   background-color: #111111;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Hero.css';
 
 const Hero = () => {
@@ -175,8 +176,8 @@ const Hero = () => {
                 </div>
 
                 <div className="hero-buttons">
-                    <a href="#projects" className="btn-gold">View Projects</a>
-                    <a href="#contact" className="btn-outline">Book Consultation</a>
+                    <Link to="/projects" className="btn-gold">View Projects</Link>
+                    <Link to="/contact" className="btn-outline">Book Consultation</Link>
                 </div>
             </div>
 
