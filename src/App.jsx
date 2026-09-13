@@ -14,6 +14,7 @@ const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
 const AdminDesignExcellence = lazy(() => import('./pages/Admin/AdminDesignExcellence'));
+//commentewre
 
 function App() {
   const location = useLocation();
@@ -29,7 +30,7 @@ function App() {
           <Route path="/design" element={<DesignExcellence />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/contact" element={<ContactUs />} />
-          
+
           {/* Public Admin Route */}
           <Route path="/admin" element={<AdminLogin />} />
 
