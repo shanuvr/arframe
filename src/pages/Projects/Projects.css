@@ -111,6 +111,91 @@
   color: var(--primary);
 }
 
+/* ===== OTHER WORKS SECTION ===== */
+.other-works-section {
+  background-color: #f9f9f9;
+}
+
+.other-works-section .container {
+  padding-top: 100px;
+  padding-bottom: 120px;
+}
+
+.other-works-section .section-header {
+  margin-bottom: 40px;
+}
+
+.other-works-section .section-header h2 {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+
+.other-works-section .section-header h2 span {
+  color: var(--primary);
+}
+
+.other-works-section .other-works-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 10px auto 0;
+}
+
+.other-works-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.other-work-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.other-work-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.other-work-item:hover img {
+  transform: scale(1.08);
+}
+
+.other-work-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, transparent 55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.other-work-overlay i {
+  color: var(--primary);
+  font-size: 1.6rem;
+  transform: translateY(8px);
+  transition: transform 0.4s ease;
+}
+
+.other-work-item:hover .other-work-overlay {
+  opacity: 1;
+}
+
+.other-work-item:hover .other-work-overlay i {
+  transform: translateY(0);
+}
+
 /* ===== CTA SECTION ===== */
 .cta-section {
   position: relative;
@@ -187,6 +272,12 @@
   }
 }
 
+@media (max-width: 992px) {
+  .other-works-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .projects-masonry {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -208,6 +299,20 @@
   .projects-masonry {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .other-works-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .other-works-section .container {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+
+  .other-works-section .section-header h2 {
+    font-size: 1.8rem;
   }
 
   .project-overlay {

@@ -37,6 +37,13 @@ const Projects = () => {
     fetchProjects(1);
   }, [fetchProjects]);
 
+  const otherWorks = [
+    '/other works/Pasted image.jpg',
+    '/other works/Susmit FF.jpg',
+    '/other works/Susmit GF.jpg',
+    '/other works/site plan for mr.vineeth and sansha.jpg',
+  ];
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -105,7 +112,7 @@ const Projects = () => {
           </div>
         </div>
       </section>
-      
+
       <section className="cta-section" style={{ backgroundImage: "url('/52138.jpeg')" }}>
         <div className="cta-overlay">
           <div className="cta-content fade-in-up">
@@ -117,6 +124,26 @@ const Projects = () => {
               <Link to="/contact" className="btn-gold">Contact Us Now</Link>
               <Link to="/design" className="btn-outline-light">Explore Our Process</Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="other-works-section">
+        <div className="container">
+          <div className="section-header text-center fade-in-up">
+            <span className="section-subtitle">MORE PHOTOS</span>
+            <h2>Other <span>Works</span></h2>
+            <p className="other-works-subtitle">A glimpse into more of our completed designs, sketches, and ongoing projects we are proud to share.</p>
+          </div>
+          <div className="other-works-grid">
+            {otherWorks.map((work, index) => (
+              <div className="other-work-item fade-in-up" key={index} style={{ animationDelay: `${(index % 3) * 0.1}s` }}>
+                <img src={work} alt={`Other work ${index + 1}`} />
+                <div className="other-work-overlay">
+                  <i className="fa-solid fa-camera"></i>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
