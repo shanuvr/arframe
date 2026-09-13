@@ -10,16 +10,15 @@ const About = () => {
     ];
 
     return (
-        <section className="about-section" id="about">
-            <div className="container grid-2">
-                <div className="about-image">
-                    <img
-                        src="/1784132288077%281%29.png"
-                        alt="Modern Mansion Architecture"
-                    />
-                </div>
-                <div className="about-text">
+        <>
+            <section className="about-intro" id="about">
+                <div className="about-intro-inner">
                     <span className="section-subtitle">ABOUT AFRAME</span>
+                </div>
+            </section>
+
+            <section className="about-section">
+                <div className="about-content">
                     <h2>Building Beyond<br />Expectations</h2>
                     <p>
                         Founded in 2020, Aframe Builders is a premier design and construction firm led by professional engineers.
@@ -34,10 +33,10 @@ const About = () => {
                             </div>
                         ))}
                     </div>
-                    <a href="#contact" className="btn-outline-dark">Read More About Us</a>
+                    <a href="#contact" className="btn-outline-about">Read More About Us</a>
                 </div>
-            </div>
-        </section>
+            </section>
+        </>
     );
 };
 

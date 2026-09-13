@@ -16,10 +16,10 @@ const Home = () => {
       <Hero />
       <About />
       <Expertise />
+      <BeforeAfter />
       <DesignExcellence />
       <FeaturedProjects />
       <WhyChooseUs />
-      <BeforeAfter />
       <Team />
       <Testimonials />
       <Contact alignTop={true} />

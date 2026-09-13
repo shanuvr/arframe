@@ -22,7 +22,8 @@ const Navbar = () => {
                 <ul className="nav-links desktop-nav">
                     <li><NavLink to="/" end>HOME</NavLink></li>
                     <li><NavLink to="/about">ABOUT US</NavLink></li>
-                    <li><NavLink to="/design">DESIGN EXCELLENCE</NavLink></li>
+                    {/* DESIGN EXCELLENCE link commented out */}
+                    {/* <li><NavLink to="/design">DESIGN EXCELLENCE</NavLink></li> */}
                     <li><NavLink to="/projects">PROJECTS</NavLink></li>
                     <li><NavLink to="/contact">CONTACT US</NavLink></li>
                 </ul>
@@ -55,11 +56,12 @@ const Navbar = () => {
                             <i className="fa-solid fa-building-user nav-icon"></i> ABOUT US
                         </NavLink>
                     </li>
-                    <li>
+                    {/* DESIGN EXCELLENCE link commented out */}
+                    {/* <li>
                         <NavLink to="/design" onClick={closeMenu}>
                             <i className="fa-solid fa-pen-ruler nav-icon"></i> DESIGN EXCELLENCE
                         </NavLink>
-                    </li>
+                    </li> */}
                     <li>
                         <NavLink to="/projects" onClick={closeMenu}>
                             <i className="fa-solid fa-city nav-icon"></i> PROJECTS

@@ -6,10 +6,13 @@ const Hero = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const heroImages = [
-        'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80',
-        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80',
-        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80',
+        '/HERO/Hero1.jpg',
+        '/HERO/hero2.jpg',
+        '/HERO/hero3.jpg',
+        '/HERO/hero4.jpg',
+        '/HERO/hero5.jpg',
+        '/HERO/hero6.jpg',
+        '/HERO/hero7.jpg',
     ];
 
     // const imageLabels = [

@@ -50,14 +50,15 @@ const AdminLayout = ({ children, title }) => {
                         <span>Projects</span>
                     </NavLink>
 
-                    <NavLink 
+                    {/* DESIGN EXCELLENCE admin link commented out */}
+                    {/* <NavLink 
                         to="/admin/design-excellence" 
                         className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
                         onClick={() => setIsSidebarOpen(false)}
                     >
                         <i className="fa-solid fa-pen-ruler"></i>
                         <span>Design Excellence</span>
-                    </NavLink>
+                    </NavLink> */}
                 </nav>
 
                 <div className="sidebar-footer">

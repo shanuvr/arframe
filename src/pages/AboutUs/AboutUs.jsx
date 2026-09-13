@@ -25,8 +25,11 @@ const AboutUs = () => {
           <div className="story-grid">
             <div className="story-text fade-in-left">
               <h2>Our <span>Story</span></h2>
-              <p>Founded in 2010, AFRAME Builders has grown from a boutique architectural firm to an industry leader in modern construction and design. We believe that architecture is more than just buildings; it's about creating spaces that inspire and endure.</p>
-              <p>Our team of visionary architects, meticulous engineers, and passionate designers work collaboratively to bring extraordinary concepts to life.</p>
+              <p>Founded in 2020 by <strong>Rajeev K R</strong>, AFrame Builders was established with a simple belief: a building should not merely look good when it is completed&mdash;it should be built to last.</p>
+              <p>At Aframe Builders, design is a promise, and construction is how we keep it. We build not for the moment, but for the decades that will test it&mdash;because true craftsmanship doesn't announce itself, it simply outlasts. Our reputation rests on three principles: quality, durability and professionalism. From design to final finish, we never compromise on construction quality&mdash;choosing the most reasonable cost without ever compromising the strength, safety or longevity of the structure.</p>
+              <p>Our work extends across &lsquo;Residential, Commercial construction, Steel Building, renovation and interior&rsquo; works, allowing us to be involved in projects from structural development to the details that make a space complete.</p>
+              <p>For us, every project is a responsibility entrusted to us by our client. We take that responsibility seriously&mdash;working with sincerity, precision and a commitment to delivering what we promise.</p>
+              <p className="story-tagline"><strong>AFrame Builders &mdash; building for today, with the strength to stand the test of time.</strong></p>
             </div>
             <div className="story-image fade-in-right">
               <img src="/1784192661079%281%29.png" alt="Modern Architecture Office" />
