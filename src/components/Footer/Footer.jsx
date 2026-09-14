@@ -62,6 +62,10 @@ const Footer = () => {
                         <i className="fa-solid fa-envelope"></i>
                         <span>aframe.ind@gmail.com</span>
                     </div>
+                    <div className="footer-social-icons">
+                        <a href="https://www.instagram.com/aframe_builders?stkn=MTA1bXRmdWRoNmQ1cA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/share/1Haa2Earky/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
+                    </div>
                 </div>
             </div>
 

@@ -68,7 +68,7 @@ const Projects = () => {
 
   return (
     <div className="page-container">
-      <section className="page-hero" style={{ backgroundImage: "url('/1784717375498%281%29.png')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/projectshero.jpg')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Our <span>Projects</span></h1>

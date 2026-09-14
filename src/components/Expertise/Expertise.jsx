@@ -35,6 +35,19 @@ const Expertise = () => {
         },
     ];
 
+    const transformations = [
+        {
+            before: '/before-after/beforea1.jpg',
+            after: '/before-after/beoforea2.jpg',
+            title: 'Home Renovation',
+        },
+        {
+            before: '/before-after/beforeb1.jpg',
+            after: '/before-after/beforeb2.jpg',
+            title: 'Home Renovation',
+        },
+    ];
+
     return (
         <section className="expertise-section">
             <div className="container">
@@ -55,6 +68,29 @@ const Expertise = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+
+                <div className="ba-showcase">
+                    <div className="ba-showcase-header text-center">
+                        <h3>Real Transformations</h3>
+                    </div>
+                    <div className="ba-showcase-grid">
+                        {transformations.map((item, index) => (
+                            <div key={index} className="ba-showcase-card">
+                                <div className="ba-compare">
+                                    <div className="ba-compare-item">
+                                        <img src={item.before} alt={`${item.title} Before`} />
+                                        <span className="ba-tag">Before</span>
+                                    </div>
+                                    <div className="ba-compare-item">
+                                        <img src={item.after} alt={`${item.title} After`} />
+                                        <span className="ba-tag after">After</span>
+                                    </div>
+                                </div>
+                                <p className="ba-title">{item.title}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

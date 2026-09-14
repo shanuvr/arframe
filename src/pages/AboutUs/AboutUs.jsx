@@ -10,7 +10,7 @@ const AboutUs = () => {
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <section className="page-hero" style={{ backgroundImage: "url('/1784716807588%281%29%281%29.png')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/aboutushero.jpg')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>About <span>Us</span></h1>

@@ -127,7 +127,7 @@ const Contact = ({ alignTop = false }) => {
                     <div className="address-details">
                         <h3>Office Address</h3>
                         <p style={{ fontSize: '16px', fontWeight: '500', marginBottom: '20px' }}>
-                            Lakshmi Tower, Parayil Lane,<br />MG Road, Thrissur, Kerala - 680004
+                            AFrame Builders<br />403, RIED Square Building, Chungam Jn,<br />Westfort, Thrissur - 680003
                         </p>
                         <p>
                             <i className="fa-solid fa-phone"></i> +91 9712337226
@@ -140,24 +140,18 @@ const Contact = ({ alignTop = false }) => {
                         </p>
 
                         <div className="social-icons">
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                                <i className="fa-brands fa-facebook-f"></i>
-                            </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                            <a href="https://www.instagram.com/aframe_builders?stkn=MTA1bXRmdWRoNmQ1cA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                                 <i className="fa-brands fa-instagram"></i>
                             </a>
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                                <i className="fa-brands fa-linkedin-in"></i>
-                            </a>
-                            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">
-                                <i className="fa-brands fa-youtube"></i>
+                            <a href="https://www.facebook.com/share/1Haa2Earky/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                <i className="fa-brands fa-facebook-f"></i>
                             </a>
                         </div>
                     </div>
 
                     <div className="map-container">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3922.567891234567!2d76.2144!3d10.5276!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDMxJzM5LjQiTiA3NsKwMTInNTEuOCJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                            src="https://maps.google.com/maps?q=10.520088,76.196966&t=&z=15&ie=UTF8&iwloc=&output=embed"
                             width="100%"
                             height="100%"
                             style={{ border: '0' }}

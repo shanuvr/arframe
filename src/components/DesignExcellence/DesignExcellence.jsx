@@ -10,15 +10,15 @@ const DesignExcellence = () => {
 
     const visualCards = [
         {
-            img: '/1784708893596%281%29.png',
+            img: '/designexcellence/Concept Sketch.jpg',
             title: 'Concept Sketch',
         },
         {
-            img: '/1784711581942%281%29.png',
+            img: '/designexcellence/3D Visualization.jpg',
             title: '3D Visualization',
         },
         {
-            img: '/1784712263786%281%29.png',
+            img: '/designexcellence/Finished Project.jpg',
             title: 'Finished Project',
         },
     ];

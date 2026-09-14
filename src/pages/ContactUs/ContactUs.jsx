@@ -84,7 +84,7 @@ const ContactUs = () => {
   return (
     <div className="page-container">
       {/* Page Hero */}
-      <section className="page-hero" style={{ backgroundImage: "url('/1784712263786%281%29.png')" }}>
+      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/aboutushero.jpg')" }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Contact <span>Us</span></h1>
@@ -141,10 +141,8 @@ const ContactUs = () => {
               <div className="social-links">
                 <h4>Connect With Us</h4>
                 <div className="social-icons">
-                  <a href="#" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
-                  <a href="#" aria-label="LinkedIn"><i className="fa-brands fa-linkedin-in"></i></a>
-                  <a href="#" aria-label="Twitter"><i className="fa-brands fa-twitter"></i></a>
-                  <a href="#" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
+                  <a href="https://www.instagram.com/aframe_builders?stkn=MTA1bXRmdWRoNmQ1cA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>
+                  <a href="https://www.facebook.com/share/1Haa2Earky/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fa-brands fa-facebook-f"></i></a>
                 </div>
               </div>
             </div>
@@ -232,7 +230,7 @@ const ContactUs = () => {
       <section className="map-section">
         <div className="map-wrapper fade-in-up">
           <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.1583091352!2d-74.11976373946229!3d40.69766374859258!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1683935292305!5m2!1sen!2s" 
+            src="https://maps.google.com/maps?q=10.520088,76.196966&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%" 
             height="100%" 
             style={{ border: 0 }} 
