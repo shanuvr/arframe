@@ -10,6 +10,7 @@ const Home = lazy(() => import('./pages/Home'));
 const AboutUs = lazy(() => import('./pages/AboutUs/AboutUs'));
 const DesignExcellence = lazy(() => import('./pages/DesignExcellence/DesignExcellence'));
 const Projects = lazy(() => import('./pages/Projects/Projects'));
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail/ProjectDetail'));
 const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
@@ -29,6 +30,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/design" element={<DesignExcellence />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/contact" element={<ContactUs />} />
 
           {/* Public Admin Route */}

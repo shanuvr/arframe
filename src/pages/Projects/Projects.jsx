@@ -79,20 +79,38 @@ const Projects = () => {
 
       <section className="projects-section section-padding">
         <div className="container">
-          <div className="projects-masonry">
-            {projects.map((project, index) => (
-              <div className="project-item fade-in-up" key={project.id} style={{ animationDelay: `${(index % 3) * 0.1}s` }}>
-                <img
-                  src={project.project_image ? `${IMAGE_BASE_URL}${project.project_image}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}
-                  alt={project.project_name}
-                />
-                <div className="project-overlay">
-                  <div className="project-info">
-                    <span className="project-category">{project.category_name}</span>
-                    <h3>{project.project_name}</h3>
-                  </div>
+          <div className="projects-grid">
+            {projects.map((project) => (
+              <Link
+                to={`/projects/${project.id}`}
+                className="project-card fade-in-up"
+                key={project.id}
+                style={{ animationDelay: '0s' }}
+              >
+                <div className="project-card-image">
+                  <img
+                    src={project.project_image ? `${IMAGE_BASE_URL}${project.project_image}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'}
+                    alt={project.project_name}
+                  />
+                  {project.category_name && (
+                    <span className="project-card-category">{project.category_name}</span>
+                  )}
                 </div>
-              </div>
+                <div className="project-card-body">
+                  <h3>{project.project_name}</h3>
+                  {project.location && (
+                    <p className="project-card-location">
+                      <i className="fa-solid fa-location-dot"></i> {project.location}
+                    </p>
+                  )}
+                  {project.description && (
+                    <p className="project-card-desc">{project.description}</p>
+                  )}
+                  <span className="project-card-link">
+                    View Project <i className="fa-solid fa-arrow-right"></i>
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
 

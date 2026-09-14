@@ -15,20 +15,21 @@ const AdminProjects = () => {
 
     // Add Form State
     const [showForm, setShowForm] = useState(false);
-    const [form, setForm] = useState({ title: '', category_id: '' });
+    const [form, setForm] = useState({ title: '', category_id: '', description: '', client: '', location: '', builtup_area: '', land_area: '' });
     const [categories, setCategories] = useState([]);
-    const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState('');
+    const [imageFiles, setImageFiles] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
     const [saving, setSaving] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
     // Edit Modal State
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
-    const [editForm, setEditForm] = useState({ title: '', category_id: '' });
-    const [editImageFile, setEditImageFile] = useState(null);
-    const [editImagePreview, setEditImagePreview] = useState('');
-    const [existingImage, setExistingImage] = useState('');
+    const [editForm, setEditForm] = useState({ title: '', category_id: '', description: '', client: '', location: '', builtup_area: '', land_area: '' });
+    const [existingImages, setExistingImages] = useState([]);
+    const [removedExisting, setRemovedExisting] = useState([]);
+    const [newImageFiles, setNewImageFiles] = useState([]);
+    const [newImagePreviews, setNewImagePreviews] = useState([]);
     const [editSaving, setEditSaving] = useState(false);
     const [editError, setEditError] = useState('');
 
@@ -82,15 +83,23 @@ const AdminProjects = () => {
     }, [showForm]);
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+        const files = Array.from(e.target.files || []);
+        if (files.length) {
+            setImageFiles(prev => [...prev, ...files]);
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreviews(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
+            });
         }
+        e.target.value = '';
+    };
+
+    const removeNewImage = (index) => {
+        setImageFiles(prev => prev.filter((_, i) => i !== index));
+        setImagePreviews(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleAddProject = async (e) => {
@@ -98,8 +107,8 @@ const AdminProjects = () => {
         setSaving(true);
         setSubmitError('');
 
-        if (!imageFile) {
-            setSubmitError('Please select a project image.');
+        if (imageFiles.length === 0) {
+            setSubmitError('Please select at least one project photo.');
             setSaving(false);
             return;
         }
@@ -108,7 +117,13 @@ const AdminProjects = () => {
             const formData = new FormData();
             formData.append('category_id', form.category_id);
             formData.append('project_name', form.title);
-            formData.append('image', imageFile);
+            formData.append('description', form.description);
+            formData.append('client', form.client);
+            formData.append('location', form.location);
+            formData.append('builtup_area', form.builtup_area);
+            formData.append('land_area', form.land_area);
+            imageFiles.forEach((file) => formData.append('images', file));
+            formData.append('image', imageFiles[0]);
 
             const response = await api.post('/api/projects', formData, {
                 headers: {
@@ -116,10 +131,10 @@ const AdminProjects = () => {
                 }
             });
 
-            setForm({ title: '', category_id: '' });
+            setForm({ title: '', category_id: '', description: '', client: '', location: '', builtup_area: '', land_area: '' });
             setCategories([]);
-            setImageFile(null);
-            setImagePreview('');
+            setImageFiles([]);
+            setImagePreviews([]);
             setShowForm(false);
             fetchProjects(1);
         } catch (err) {
@@ -143,14 +158,23 @@ const AdminProjects = () => {
     };
 
     const handleEditClick = (proj) => {
+        const projImages = proj.images && proj.images.length > 0
+            ? proj.images
+            : (proj.project_image ? [proj.project_image] : []);
         setEditingId(proj.id);
         setEditForm({
             title: proj.project_name || '',
-            category_id: proj.category_id ? String(proj.category_id) : ''
+            category_id: proj.category_id ? String(proj.category_id) : '',
+            description: proj.description || '',
+            client: proj.client || '',
+            location: proj.location || '',
+            builtup_area: proj.builtup_area || '',
+            land_area: proj.land_area || ''
         });
-        setExistingImage(proj.project_image ? `${IMAGE_BASE_URL}${proj.project_image}` : '');
-        setEditImageFile(null);
-        setEditImagePreview('');
+        setExistingImages(projImages.map((key) => ({ key, url: `${IMAGE_BASE_URL}${key}` })));
+        setRemovedExisting([]);
+        setNewImageFiles([]);
+        setNewImagePreviews([]);
         setEditError('');
         setEditModalOpen(true);
         if (categories.length === 0) {
@@ -159,15 +183,27 @@ const AdminProjects = () => {
     };
 
     const handleEditImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setEditImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+        const files = Array.from(e.target.files || []);
+        if (files.length) {
+            setNewImageFiles(prev => [...prev, ...files]);
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setNewImagePreviews(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
+            });
         }
+        e.target.value = '';
+    };
+
+    const removeNewEditImage = (index) => {
+        setNewImageFiles(prev => prev.filter((_, i) => i !== index));
+        setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const removeExistingImage = (key) => {
+        setRemovedExisting(prev => [...prev, key]);
     };
 
     const handleUpdateProject = async (e) => {
@@ -175,12 +211,29 @@ const AdminProjects = () => {
         setEditSaving(true);
         setEditError('');
 
+        const keptKeys = existingImages
+            .filter(img => !removedExisting.includes(img.key))
+            .map(img => img.key);
+
+        if (keptKeys.length === 0 && newImageFiles.length === 0) {
+            setEditError('A project must keep or add at least one photo.');
+            setEditSaving(false);
+            return;
+        }
+
         try {
             const formData = new FormData();
             formData.append('category_id', editForm.category_id);
             formData.append('project_name', editForm.title);
-            if (editImageFile) {
-                formData.append('image', editImageFile);
+            formData.append('description', editForm.description);
+            formData.append('client', editForm.client);
+            formData.append('location', editForm.location);
+            formData.append('builtup_area', editForm.builtup_area);
+            formData.append('land_area', editForm.land_area);
+            keptKeys.forEach((key) => formData.append('keep_images', key));
+            newImageFiles.forEach((file) => formData.append('images', file));
+            if (newImageFiles.length > 0) {
+                formData.append('image', newImageFiles[0]);
             }
 
             await api.put(`/api/projects/${editingId}`, formData, {
@@ -191,10 +244,11 @@ const AdminProjects = () => {
 
             setEditModalOpen(false);
             setEditingId(null);
-            setEditForm({ title: '', category_id: '' });
-            setEditImageFile(null);
-            setEditImagePreview('');
-            setExistingImage('');
+            setEditForm({ title: '', category_id: '', description: '', client: '', location: '', builtup_area: '', land_area: '' });
+            setExistingImages([]);
+            setRemovedExisting([]);
+            setNewImageFiles([]);
+            setNewImagePreviews([]);
             fetchProjects(page);
         } catch (err) {
             setEditError(err.response?.data?.message || 'Failed to update project. Please try again.');
@@ -249,7 +303,7 @@ const AdminProjects = () => {
                                     <label>Project Title</label>
                                     <input 
                                         type="text" 
-                                        placeholder="e.g. Skyline Residence" 
+                                        placeholder="e.g. Residence Aadimadhavam" 
                                         value={form.title}
                                         onChange={e => setForm({...form, title: e.target.value})}
                                         required 
@@ -268,11 +322,57 @@ const AdminProjects = () => {
                                         ))}
                                     </select>
                                 </div>
+                                <div className="form-group">
+                                    <label>Location</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. Ammadam, Thrissur" 
+                                        value={form.location}
+                                        onChange={e => setForm({...form, location: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Client</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. Mr Pradeep" 
+                                        value={form.client}
+                                        onChange={e => setForm({...form, client: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Built-up Area</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. 2850 Sqft" 
+                                        value={form.builtup_area}
+                                        onChange={e => setForm({...form, builtup_area: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Land Area</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="e.g. 50 Cent" 
+                                        value={form.land_area}
+                                        onChange={e => setForm({...form, land_area: e.target.value})}
+                                    />
+                                </div>
                                 <div className="form-group full-width">
-                                    <label>Project Image</label>
+                                    <label>Project Description</label>
+                                    <textarea 
+                                        rows="4" 
+                                        placeholder="Detailed story of the project — its concept, materials, and design intent..."
+                                        value={form.description}
+                                        onChange={e => setForm({...form, description: e.target.value})}
+                                    ></textarea>
+                                </div>
+                                <div className="form-group full-width">
+                                    <label>Project Photos <span style={{ fontWeight: 400 }}>(first photo becomes the cover)</span></label>
                                     <input 
                                         type="file" 
                                         accept="image/*"
+                                        multiple
                                         onChange={handleImageChange}
                                         style={{
                                             padding: '10px',
@@ -282,19 +382,17 @@ const AdminProjects = () => {
                                             background: '#ffffff'
                                         }}
                                     />
-                                    {imagePreview && (
-                                        <div style={{ marginTop: '12px' }}>
-                                            <img 
-                                                src={imagePreview} 
-                                                alt="Preview" 
-                                                style={{
-                                                    width: '100%',
-                                                    maxHeight: '200px',
-                                                    objectFit: 'cover',
-                                                    borderRadius: '8px',
-                                                    border: '2px solid #d4af37'
-                                                }} 
-                                            />
+                                    {imagePreviews.length > 0 && (
+                                        <div className="photo-preview-grid">
+                                            {imagePreviews.map((src, i) => (
+                                                <div className="photo-preview-item" key={i}>
+                                                    <img src={src} alt={`Photo ${i + 1} preview`} />
+                                                    {i === 0 && <span className="cover-badge">Cover</span>}
+                                                    <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewImage(i)}>
+                                                        <i className="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
@@ -325,20 +423,22 @@ const AdminProjects = () => {
                                     <th>Thumbnail</th>
                                     <th>Project Title</th>
                                     <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Photos</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="4" style={{ textAlign: 'center', padding: '40px' }}>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
                                             <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '24px', color: '#d4af37' }}></i>
                                             <p style={{ marginTop: '12px', color: '#6b7280' }}>Loading projects...</p>
                                         </td>
                                     </tr>
                                 ) : projects.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
                                             <i className="fa-solid fa-folder-open" style={{ fontSize: '32px', marginBottom: '12px', color: '#d1d5db' }}></i>
                                             <p>No projects found.</p>
                                         </td>
@@ -348,15 +448,25 @@ const AdminProjects = () => {
                                         <tr key={proj.id}>
                                             <td>
                                                 <img 
-                                                    src={proj.project_image ? `${IMAGE_BASE_URL}${proj.project_image}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=300&q=80'} 
+                                                    src={proj.project_image ? `${IMAGE_BASE_URL}${proj.project_image}` : (proj.images && proj.images[0] ? `${IMAGE_BASE_URL}${proj.images[0]}` : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=300&q=80')} 
                                                     alt={proj.project_name} 
                                                     className="table-thumb" 
                                                 />
                                             </td>
                                             <td>
                                                 <strong className="item-title">{proj.project_name}</strong>
+                                                {proj.description && (
+                                                    <p className="item-subtext">{proj.description}</p>
+                                                )}
                                             </td>
                                             <td><span className="category-pill">{proj.category_name}</span></td>
+                                            <td>{proj.location || '—'}</td>
+                                            <td>
+                                                <span className="photo-count-pill">
+                                                    <i className="fa-solid fa-image"></i> 
+                                                    {proj.images ? proj.images.length : (proj.project_image ? 1 : 0)}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <div className="action-buttons">
                                                     <button className="action-btn edit-btn" title="Edit Item" onClick={() => handleEditClick(proj)}>
@@ -550,14 +660,135 @@ const AdminProjects = () => {
                             )}
 
                             <div style={{ display: 'grid', gap: '16px' }}>
+                                <div className="edit-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', boxSizing: 'border-box' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Project Title</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Residence Aadimadhavam"
+                                            value={editForm.title}
+                                            onChange={e => setEditForm({...editForm, title: e.target.value})}
+                                            required
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Category</label>
+                                        <select
+                                            value={editForm.category_id}
+                                            onChange={e => setEditForm({...editForm, category_id: e.target.value})}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                background: '#ffffff',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        >
+                                            {categories.map((cat) => (
+                                                <option key={cat.id} value={cat.id}>
+                                                    {cat.category_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Location</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Ammadam, Thrissur"
+                                            value={editForm.location}
+                                            onChange={e => setEditForm({...editForm, location: e.target.value})}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Client</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Mr Pradeep"
+                                            value={editForm.client}
+                                            onChange={e => setEditForm({...editForm, client: e.target.value})}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Built-up Area</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. 2850 Sqft"
+                                            value={editForm.builtup_area}
+                                            onChange={e => setEditForm({...editForm, builtup_area: e.target.value})}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Land Area</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. 50 Cent"
+                                            value={editForm.land_area}
+                                            onChange={e => setEditForm({...editForm, land_area: e.target.value})}
+                                            style={{
+                                                width: '100%',
+                                                padding: '10px 14px',
+                                                border: '1px solid #d1d5db',
+                                                borderRadius: '8px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Project Title</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. Skyline Residence"
-                                        value={editForm.title}
-                                        onChange={e => setEditForm({...editForm, title: e.target.value})}
-                                        required
+                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Project Description</label>
+                                    <textarea
+                                        rows="4"
+                                        placeholder="Detailed story of the project — its concept, materials, and design intent..."
+                                        value={editForm.description}
+                                        onChange={e => setEditForm({...editForm, description: e.target.value})}
                                         style={{
                                             width: '100%',
                                             padding: '10px 14px',
@@ -565,40 +796,19 @@ const AdminProjects = () => {
                                             borderRadius: '8px',
                                             fontSize: '14px',
                                             outline: 'none',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            resize: 'vertical',
+                                            fontFamily: 'inherit'
                                         }}
-                                    />
+                                    ></textarea>
                                 </div>
 
                                 <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Category</label>
-                                    <select
-                                        value={editForm.category_id}
-                                        onChange={e => setEditForm({...editForm, category_id: e.target.value})}
-                                        style={{
-                                            width: '100%',
-                                            padding: '10px 14px',
-                                            border: '1px solid #d1d5db',
-                                            borderRadius: '8px',
-                                            fontSize: '14px',
-                                            outline: 'none',
-                                            background: '#ffffff',
-                                            boxSizing: 'border-box'
-                                        }}
-                                    >
-                                        {categories.map((cat) => (
-                                            <option key={cat.id} value={cat.id}>
-                                                {cat.category_name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Project Image <span style={{ color: '#9ca3af', fontWeight: 400 }}>(optional)</span></label>
+                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Project Photos <span style={{ color: '#9ca3af', fontWeight: 400 }}>(first photo is the cover)</span></label>
                                     <input
                                         type="file"
                                         accept="image/*"
+                                        multiple
                                         onChange={handleEditImageChange}
                                         style={{
                                             padding: '10px',
@@ -609,35 +819,43 @@ const AdminProjects = () => {
                                             boxSizing: 'border-box'
                                         }}
                                     />
-                                    {editImagePreview ? (
+                                    {existingImages.length > 0 && (
                                         <div style={{ marginTop: '12px' }}>
-                                            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>New Preview:</p>
-                                            <img
-                                                src={editImagePreview}
-                                                alt="New Preview"
-                                                style={{
-                                                    width: '100%',
-                                                    maxHeight: '220px',
-                                                    objectFit: 'cover',
-                                                    borderRadius: '8px',
-                                                    border: '2px solid #d4af37'
-                                                }}
-                                            />
+                                            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>Current Photos:</p>
+                                            <div className="photo-preview-grid">
+                                                {existingImages.map((img, i) => (
+                                                    <div className={`photo-preview-item ${removedExisting.includes(img.key) ? 'removing' : ''} ${i === 0 && !removedExisting.includes(img.key) ? 'is-cover' : ''}`} key={img.key}>
+                                                        <img src={img.url} alt={`Current photo ${i + 1}`} />
+                                                        {i === 0 && !removedExisting.includes(img.key) && <span className="cover-badge">Cover</span>}
+                                                        {removedExisting.includes(img.key) && <span className="removing-badge">Removed</span>}
+                                                        <button
+                                                            type="button"
+                                                            className="remove-photo-btn"
+                                                            title={removedExisting.includes(img.key) ? 'Undo remove' : 'Remove photo'}
+                                                            onClick={() => removedExisting.includes(img.key)
+                                                                ? setRemovedExisting(prev => prev.filter(k => k !== img.key))
+                                                                : removeExistingImage(img.key)}
+                                                        >
+                                                            <i className={`fa-solid ${removedExisting.includes(img.key) ? 'fa-rotate-left' : 'fa-xmark'}`}></i>
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                    ) : existingImage && (
+                                    )}
+                                    {newImagePreviews.length > 0 && (
                                         <div style={{ marginTop: '12px' }}>
-                                            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>Current Image:</p>
-                                            <img
-                                                src={existingImage}
-                                                alt="Current"
-                                                style={{
-                                                    width: '100%',
-                                                    maxHeight: '220px',
-                                                    objectFit: 'cover',
-                                                    borderRadius: '8px',
-                                                    border: '2px solid #e5e7eb'
-                                                }}
-                                            />
+                                            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>New Photos:</p>
+                                            <div className="photo-preview-grid">
+                                                {newImagePreviews.map((src, i) => (
+                                                    <div className="photo-preview-item" key={i}>
+                                                        <img src={src} alt={`New photo ${i + 1}`} />
+                                                        <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewEditImage(i)}>
+                                                            <i className="fa-solid fa-xmark"></i>
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
