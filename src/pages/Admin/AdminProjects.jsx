@@ -19,6 +19,7 @@ const AdminProjects = () => {
     const [categories, setCategories] = useState([]);
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [addCoverIndex, setAddCoverIndex] = useState(0);
     const [saving, setSaving] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
@@ -30,6 +31,7 @@ const AdminProjects = () => {
     const [removedExisting, setRemovedExisting] = useState([]);
     const [newImageFiles, setNewImageFiles] = useState([]);
     const [newImagePreviews, setNewImagePreviews] = useState([]);
+    const [selectedCoverKey, setSelectedCoverKey] = useState(null);
     const [editSaving, setEditSaving] = useState(false);
     const [editError, setEditError] = useState('');
 
@@ -100,6 +102,9 @@ const AdminProjects = () => {
     const removeNewImage = (index) => {
         setImageFiles(prev => prev.filter((_, i) => i !== index));
         setImagePreviews(prev => prev.filter((_, i) => i !== index));
+        if (addCoverIndex >= index && addCoverIndex > 0) {
+            setAddCoverIndex(prev => prev - 1);
+        }
     };
 
     const handleAddProject = async (e) => {
@@ -114,6 +119,13 @@ const AdminProjects = () => {
         }
 
         try {
+            // Reorder image files so cover image is first
+            const orderedFiles = [...imageFiles];
+            if (addCoverIndex > 0 && addCoverIndex < orderedFiles.length) {
+                const coverFile = orderedFiles.splice(addCoverIndex, 1)[0];
+                orderedFiles.unshift(coverFile);
+            }
+
             const formData = new FormData();
             formData.append('category_id', form.category_id);
             formData.append('project_name', form.title);
@@ -122,10 +134,10 @@ const AdminProjects = () => {
             formData.append('location', form.location);
             formData.append('builtup_area', form.builtup_area);
             formData.append('land_area', form.land_area);
-            imageFiles.forEach((file) => formData.append('images', file));
-            formData.append('image', imageFiles[0]);
+            orderedFiles.forEach((file) => formData.append('images', file));
+            formData.append('image', orderedFiles[0]);
 
-            const response = await api.post('/api/projects', formData, {
+            await api.post('/api/projects', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -135,6 +147,7 @@ const AdminProjects = () => {
             setCategories([]);
             setImageFiles([]);
             setImagePreviews([]);
+            setAddCoverIndex(0);
             setShowForm(false);
             fetchProjects(1);
         } catch (err) {
@@ -161,6 +174,9 @@ const AdminProjects = () => {
         const projImages = proj.images && proj.images.length > 0
             ? proj.images
             : (proj.project_image ? [proj.project_image] : []);
+
+        const initialCoverKey = proj.project_image || (projImages[0] || null);
+
         setEditingId(proj.id);
         setEditForm({
             title: proj.project_name || '',
@@ -175,6 +191,7 @@ const AdminProjects = () => {
         setRemovedExisting([]);
         setNewImageFiles([]);
         setNewImagePreviews([]);
+        setSelectedCoverKey(initialCoverKey);
         setEditError('');
         setEditModalOpen(true);
         if (categories.length === 0) {
@@ -200,10 +217,16 @@ const AdminProjects = () => {
     const removeNewEditImage = (index) => {
         setNewImageFiles(prev => prev.filter((_, i) => i !== index));
         setNewImagePreviews(prev => prev.filter((_, i) => i !== index));
+        if (selectedCoverKey === `NEW_${index}`) {
+            setSelectedCoverKey(null);
+        }
     };
 
     const removeExistingImage = (key) => {
         setRemovedExisting(prev => [...prev, key]);
+        if (selectedCoverKey === key) {
+            setSelectedCoverKey(null);
+        }
     };
 
     const handleUpdateProject = async (e) => {
@@ -230,6 +253,10 @@ const AdminProjects = () => {
             formData.append('location', editForm.location);
             formData.append('builtup_area', editForm.builtup_area);
             formData.append('land_area', editForm.land_area);
+            if (selectedCoverKey) {
+                formData.append('cover_image_key', selectedCoverKey);
+            }
+
             keptKeys.forEach((key) => formData.append('keep_images', key));
             newImageFiles.forEach((file) => formData.append('images', file));
             if (newImageFiles.length > 0) {
@@ -249,6 +276,7 @@ const AdminProjects = () => {
             setRemovedExisting([]);
             setNewImageFiles([]);
             setNewImagePreviews([]);
+            setSelectedCoverKey(null);
             fetchProjects(page);
         } catch (err) {
             setEditError(err.response?.data?.message || 'Failed to update project. Please try again.');
@@ -384,15 +412,29 @@ const AdminProjects = () => {
                                     />
                                     {imagePreviews.length > 0 && (
                                         <div className="photo-preview-grid">
-                                            {imagePreviews.map((src, i) => (
-                                                <div className="photo-preview-item" key={i}>
-                                                    <img src={src} alt={`Photo ${i + 1} preview`} />
-                                                    {i === 0 && <span className="cover-badge">Cover</span>}
-                                                    <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewImage(i)}>
-                                                        <i className="fa-solid fa-xmark"></i>
-                                                    </button>
-                                                </div>
-                                            ))}
+                                            {imagePreviews.map((src, i) => {
+                                                const isCover = i === addCoverIndex;
+                                                return (
+                                                    <div className={`photo-preview-item ${isCover ? 'is-cover' : ''}`} key={i}>
+                                                        <img src={src} alt={`Photo ${i + 1} preview`} />
+                                                        {isCover ? (
+                                                            <span className="cover-badge"><i className="fa-solid fa-star"></i> Cover</span>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                className="make-cover-btn"
+                                                                title="Set as Cover Image"
+                                                                onClick={() => setAddCoverIndex(i)}
+                                                            >
+                                                                <i className="fa-regular fa-star"></i> Make Cover
+                                                            </button>
+                                                        )}
+                                                        <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewImage(i)}>
+                                                            <i className="fa-solid fa-xmark"></i>
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </div>
@@ -823,23 +865,37 @@ const AdminProjects = () => {
                                         <div style={{ marginTop: '12px' }}>
                                             <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>Current Photos:</p>
                                             <div className="photo-preview-grid">
-                                                {existingImages.map((img, i) => (
-                                                    <div className={`photo-preview-item ${removedExisting.includes(img.key) ? 'removing' : ''} ${i === 0 && !removedExisting.includes(img.key) ? 'is-cover' : ''}`} key={img.key}>
-                                                        <img src={img.url} alt={`Current photo ${i + 1}`} />
-                                                        {i === 0 && !removedExisting.includes(img.key) && <span className="cover-badge">Cover</span>}
-                                                        {removedExisting.includes(img.key) && <span className="removing-badge">Removed</span>}
-                                                        <button
-                                                            type="button"
-                                                            className="remove-photo-btn"
-                                                            title={removedExisting.includes(img.key) ? 'Undo remove' : 'Remove photo'}
-                                                            onClick={() => removedExisting.includes(img.key)
-                                                                ? setRemovedExisting(prev => prev.filter(k => k !== img.key))
-                                                                : removeExistingImage(img.key)}
-                                                        >
-                                                            <i className={`fa-solid ${removedExisting.includes(img.key) ? 'fa-rotate-left' : 'fa-xmark'}`}></i>
-                                                        </button>
-                                                    </div>
-                                                ))}
+                                                {existingImages.map((img, i) => {
+                                                    const isRemoved = removedExisting.includes(img.key);
+                                                    const isCover = selectedCoverKey === img.key || (!selectedCoverKey && i === 0 && !isRemoved);
+                                                    return (
+                                                        <div className={`photo-preview-item ${isRemoved ? 'removing' : ''} ${isCover ? 'is-cover' : ''}`} key={img.key}>
+                                                            <img src={img.url} alt={`Current photo ${i + 1}`} />
+                                                            {isCover && !isRemoved && <span className="cover-badge"><i className="fa-solid fa-star"></i> Cover</span>}
+                                                            {isRemoved && <span className="removing-badge">Removed</span>}
+                                                            {!isCover && !isRemoved && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="make-cover-btn"
+                                                                    title="Set as Cover Image"
+                                                                    onClick={() => setSelectedCoverKey(img.key)}
+                                                                >
+                                                                    <i className="fa-regular fa-star"></i> Make Cover
+                                                                </button>
+                                                            )}
+                                                            <button
+                                                                type="button"
+                                                                className="remove-photo-btn"
+                                                                title={isRemoved ? 'Undo remove' : 'Remove photo'}
+                                                                onClick={() => isRemoved
+                                                                    ? setRemovedExisting(prev => prev.filter(k => k !== img.key))
+                                                                    : removeExistingImage(img.key)}
+                                                            >
+                                                                <i className={`fa-solid ${isRemoved ? 'fa-rotate-left' : 'fa-xmark'}`}></i>
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     )}
@@ -847,14 +903,29 @@ const AdminProjects = () => {
                                         <div style={{ marginTop: '12px' }}>
                                             <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>New Photos:</p>
                                             <div className="photo-preview-grid">
-                                                {newImagePreviews.map((src, i) => (
-                                                    <div className="photo-preview-item" key={i}>
-                                                        <img src={src} alt={`New photo ${i + 1}`} />
-                                                        <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewEditImage(i)}>
-                                                            <i className="fa-solid fa-xmark"></i>
-                                                        </button>
-                                                    </div>
-                                                ))}
+                                                {newImagePreviews.map((src, i) => {
+                                                    const isCover = selectedCoverKey === `NEW_${i}`;
+                                                    return (
+                                                        <div className={`photo-preview-item ${isCover ? 'is-cover' : ''}`} key={i}>
+                                                            <img src={src} alt={`New photo ${i + 1}`} />
+                                                            {isCover ? (
+                                                                <span className="cover-badge"><i className="fa-solid fa-star"></i> Cover</span>
+                                                            ) : (
+                                                                <button
+                                                                    type="button"
+                                                                    className="make-cover-btn"
+                                                                    title="Set as Cover Image"
+                                                                    onClick={() => setSelectedCoverKey(`NEW_${i}`)}
+                                                                >
+                                                                    <i className="fa-regular fa-star"></i> Make Cover
+                                                                </button>
+                                                            )}
+                                                            <button type="button" className="remove-photo-btn" title="Remove photo" onClick={() => removeNewEditImage(i)}>
+                                                                <i className="fa-solid fa-xmark"></i>
+                                                            </button>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     )}

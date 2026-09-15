@@ -12,34 +12,6 @@ const buildImageUrl = (img) => {
   return `${IMAGE_BASE_URL}${img}`;
 };
 
-const STATIC_PROJECT_4 = {
-  project_name: 'Residence AADIMADHAVAM',
-  category_name: 'Interiors',
-  description: 'Aadimadhavam reflects timeless character and peaceful tropical living. Defined by bold Corten steel, lush greenery, and raw natural textures, the residence blends strength and warmth while maintaining a seamless connection with its surroundings.',
-  client: 'Mr Pradeep',
-  location: 'Ammadam, Thrissur',
-  builtup_area: '2850 Sqft',
-  land_area: '50 Cent',
-  images: [
-    '/Ammadom/IMG_0513.jpg',
-    '/Ammadom/9195AC76-8A6C-495F-AD39-691A1A31035D.jpg',
-    '/Ammadom/IMG_0515.jpg',
-    '/Ammadom/IMG_0516.jpg',
-    '/Ammadom/IMG_0517.jpg',
-    '/Ammadom/IMG_0518.jpg',
-    '/Ammadom/IMG_0519.jpg',
-    '/Ammadom/IMG_0520.jpg',
-    '/Ammadom/IMG_0521.jpg',
-    '/Ammadom/IMG_0522.jpg',
-  ],
-};
-
-const matchesStaticProject4 = (project) => {
-  const id = String(project?.id || '');
-  const name = String(project?.project_name || '');
-  return id === '4' || name.toUpperCase().includes('AADIMADHAVAM');
-};
-
 const ProjectDetail = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -86,7 +58,7 @@ const ProjectDetail = () => {
       if (!found) found = await findInList(id);
       if (active) {
         if (found) {
-          setProject(matchesStaticProject4(found) ? { ...found, ...STATIC_PROJECT_4 } : found);
+          setProject(found);
         } else {
           setError('Project not found.');
         }
