@@ -1,0 +1,214 @@
+/* ===== GLOBAL PRELOADER (DARK BRANDED SPLASH) ===== */
+.preload-lock {
+    overflow: hidden;
+    height: 100vh;
+}
+
+.preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(1200px 600px at 50% -10%, #1a1a1a 0%, #0d0d0d 45%, #080808 100%);
+    overflow: hidden;
+    transition: opacity 0.65s ease, visibility 0.65s ease;
+    font-family: var(--font-body);
+}
+
+.preloader-fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.preloader-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 560px;
+    height: 560px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 193, 7, 0.14) 0%, rgba(255, 193, 7, 0.05) 38%, transparent 70%);
+    animation: preloaderGlow 3.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.preloader-lines {
+    position: absolute;
+    top: 28px;
+    bottom: 28px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 193, 7, 0.35), transparent);
+}
+
+.preloader-lines-left {
+    left: 34px;
+}
+
+.preloader-lines-right {
+    right: 34px;
+}
+
+.preloader-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 24px;
+    max-width: 480px;
+}
+
+.preloader-logo-holder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 172px;
+    height: 172px;
+    margin-bottom: 26px;
+}
+
+.preloader-logo {
+    width: 150px;
+    height: auto;
+    display: block;
+    animation: preloaderLogo 2.4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 18px rgba(255, 193, 7, 0.18));
+}
+
+.preloader-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 193, 7, 0.25);
+    border-top-color: #ffc107;
+    animation: preloaderSpin 1.6s linear infinite;
+}
+
+.preloader-brand {
+    font-family: var(--font-heading);
+    font-size: 1.7rem;
+    letter-spacing: 4px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.preloader-tagline {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #9aa0a6;
+    margin-bottom: 40px;
+}
+
+.preloader-progress {
+    width: 100%;
+    max-width: 340px;
+}
+
+.preloader-bar {
+    position: relative;
+    height: 4px;
+    background: rgba(255, 193, 7, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.preloader-bar-fill {
+    position: relative;
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #e0a800, #ffc107);
+    transition: width 0.12s linear;
+    overflow: hidden;
+}
+
+.preloader-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+    animation: preloaderShimmer 1.2s ease-in-out infinite;
+}
+
+.preloader-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+}
+
+.preloader-percent {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffc107;
+    letter-spacing: 1px;
+    min-width: 46px;
+    text-align: left;
+}
+
+.preloader-message {
+    font-size: 0.75rem;
+    color: #8a9098;
+    letter-spacing: 0.4px;
+}
+
+@keyframes preloaderSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes preloaderLogo {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.06);
+    }
+}
+
+@keyframes preloaderGlow {
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.12);
+    }
+}
+
+@keyframes preloaderShimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@media (max-width: 576px) {
+    .preloader-brand {
+        font-size: 1.35rem;
+        letter-spacing: 3px;
+    }
+
+    .preloader-logo-holder {
+        width: 140px;
+        height: 140px;
+    }
+
+    .preloader-logo {
+        width: 122px;
+    }
+
+    .preloader-lines {
+        display: none;
+    }
+}

@@ -50,6 +50,15 @@ const AdminLayout = ({ children, title }) => {
                         <span>Projects</span>
                     </NavLink>
 
+                    <NavLink
+                        to="/admin/hero-images"
+                        className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                    >
+                        <i className="fa-solid fa-images"></i>
+                        <span>Hero Images</span>
+                    </NavLink>
+
                     {/* DESIGN EXCELLENCE admin link commented out */}
                     {/* <NavLink 
                         to="/admin/design-excellence" 

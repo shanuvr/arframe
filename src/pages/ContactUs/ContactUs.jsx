@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios.js';
+import { useHeroImages } from '../../hooks/useHeroImages.js';
+import { buildImageUrl } from '../../api/pageSettings.js';
 import './ContactUs.css';
 
 const ContactUs = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { settings } = useHeroImages();
+  const contactHero = buildImageUrl(settings?.contact_hero?.image) || '/pagehero/aboutushero.jpg';
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -84,7 +89,7 @@ const ContactUs = () => {
   return (
     <div className="page-container">
       {/* Page Hero */}
-      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/aboutushero.jpg')" }}>
+      <section className="page-hero" style={{ backgroundImage: `url('${contactHero}')` }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Contact <span>Us</span></h1>

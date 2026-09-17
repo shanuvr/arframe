@@ -1,0 +1,55 @@
+/* ===== ROUTE-LEVEL LOADER (LAZY PAGE TRANSITIONS) ===== */
+.route-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 55vh;
+    padding: 80px 20px;
+    background: #ffffff;
+}
+
+.route-loader-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.route-loader-logo {
+    width: 96px;
+    height: auto;
+    display: block;
+    filter: grayscale(0) brightness(0.2);
+    opacity: 0.85;
+}
+
+.route-loader-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    border-top-color: #d4af37;
+    animation: preloaderSpin 0.9s linear infinite;
+}
+
+.route-loader-spinner i {
+    font-size: 14px;
+    color: #d4af37;
+}
+
+.route-loader-text {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+@keyframes preloaderSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}

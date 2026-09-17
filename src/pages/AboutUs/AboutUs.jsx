@@ -1,16 +1,21 @@
 import React, { useEffect } from 'react';
 import './AboutUs.css';
 import { Link } from 'react-router-dom';
+import { useHeroImages } from '../../hooks/useHeroImages.js';
+import { buildImageUrl } from '../../api/pageSettings.js';
 
 const AboutUs = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const { settings } = useHeroImages();
+  const aboutHero = buildImageUrl(settings?.about_hero?.image) || '/pagehero/aboutushero.jpg';
+
   return (
     <div className="page-container">
       {/* Hero Section */}
-      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/aboutushero.jpg')" }}>
+      <section className="page-hero" style={{ backgroundImage: `url('${aboutHero}')` }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>About <span>Us</span></h1>

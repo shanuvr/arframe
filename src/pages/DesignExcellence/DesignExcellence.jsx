@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './DesignExcellence.css';
 import { Link } from 'react-router-dom';
 import api from '../../api/axios.js';
+import { useHeroImages } from '../../hooks/useHeroImages.js';
+import { buildImageUrl, DEFAULT_HERO_IMAGES } from '../../api/pageSettings.js';
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
 
@@ -11,6 +13,10 @@ const DesignExcellencePage = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
+  const { settings } = useHeroImages();
+
+  const designHero =
+    buildImageUrl(settings?.design_hero?.image) || DEFAULT_HERO_IMAGES.design_hero.image;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -68,7 +74,7 @@ const DesignExcellencePage = () => {
 
   return (
     <div className="page-container">
-      <section className="page-hero" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop')" }}>
+      <section className="page-hero" style={{ backgroundImage: `url('${designHero}')` }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Design <span>Excellence</span></h1>

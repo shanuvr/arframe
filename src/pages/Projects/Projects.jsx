@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './Projects.css';
 import { Link } from 'react-router-dom';
 import api from '../../api/axios.js';
+import { useHeroImages } from '../../hooks/useHeroImages.js';
+import { buildImageUrl } from '../../api/pageSettings.js';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -9,8 +11,10 @@ const Projects = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const loaderRef = useRef(null);
+  const { settings } = useHeroImages();
 
   const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
+  const projectsHero = buildImageUrl(settings?.projects_hero?.image) || '/pagehero/projectshero.jpg';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -68,7 +72,7 @@ const Projects = () => {
 
   return (
     <div className="page-container">
-      <section className="page-hero" style={{ backgroundImage: "url('/pagehero/projectshero.jpg')" }}>
+      <section className="page-hero" style={{ backgroundImage: `url('${projectsHero}')` }}>
         <div className="hero-overlay">
           <div className="hero-content fade-in-up">
             <h1>Our <span>Projects</span></h1>

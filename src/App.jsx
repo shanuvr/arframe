@@ -5,6 +5,8 @@ import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import ProtectedRoute from './components/Admin/ProtectedRoute';
+import Preloader from './components/Loader/Preloader';
+import RouteLoader from './components/Loader/RouteLoader';
 
 const Home = lazy(() => import('./pages/Home'));
 const AboutUs = lazy(() => import('./pages/AboutUs/AboutUs'));
@@ -15,7 +17,7 @@ const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
 const AdminDesignExcellence = lazy(() => import('./pages/Admin/AdminDesignExcellence'));
-//commentewre
+const AdminHeroImages = lazy(() => import('./pages/Admin/AdminHeroImages'));
 
 function App() {
   const location = useLocation();
@@ -23,8 +25,9 @@ function App() {
 
   return (
     <>
+      {!isAdminRoute && <Preloader />}
       {!isAdminRoute && <Navbar />}
-      <Suspense fallback={null}>
+      <Suspense fallback={<RouteLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
@@ -41,6 +44,7 @@ function App() {
             <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
+            <Route path="/admin/hero-images" element={<AdminHeroImages />} />
           </Route>
         </Routes>
       </Suspense>

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useHeroImages } from '../../hooks/useHeroImages.js';
+import { buildImageUrl, DEFAULT_HERO_IMAGES } from '../../api/pageSettings.js';
 import './Hero.css';
 
 const Hero = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const { settings } = useHeroImages();
 
-    const heroImages = [
-        '/HERO/Hero1.jpg',
-        '/HERO/hero2.jpg',
-        '/HERO/hero3.jpg',
-        '/HERO/hero4.jpg',
-        '/HERO/hero5.jpg',
-        '/HERO/hero6.jpg',
-        '/HERO/hero7.jpg',
-    ];
+    const heroImages = useMemo(() => {
+        const list = settings?.home_hero?.images?.length
+            ? settings.home_hero.images
+            : DEFAULT_HERO_IMAGES.home_hero.images;
+        return list.map(buildImageUrl);
+    }, [settings]);
 
     // const imageLabels = [
     //     'Modern Architecture',
@@ -24,6 +24,7 @@ const Hero = () => {
 
     // Auto-scroll images every 5 seconds
     useEffect(() => {
+        if (heroImages.length === 0) return;
         const timer = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
         }, 5000);
@@ -40,6 +41,8 @@ const Hero = () => {
     const handleNextImage = () => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
     };
+
+    const safeIndex = heroImages.length ? currentImageIndex % heroImages.length : 0;
 
     return (
         // <header className="hero" id="home">
@@ -123,7 +126,7 @@ const Hero = () => {
                         {heroImages.map((image, index) => (
                             <div
                                 key={index}
-                                className={`carousel-slide ${index === currentImageIndex ? 'active' : ''}`}
+                                className={`carousel-slide ${index === safeIndex ? 'active' : ''}`}
                                 style={{ backgroundImage: `url(${image})` }}
                             >
                                 {/* <div className="carousel-label">{imageLabels[index]}</div> */}
@@ -152,7 +155,7 @@ const Hero = () => {
                         {heroImages.map((_, index) => (
                             <button
                                 key={index}
-                                className={`indicator ${index === currentImageIndex ? 'active' : ''}`}
+                                className={`indicator ${index === safeIndex ? 'active' : ''}`}
                                 onClick={() => setCurrentImageIndex(index)}
                                 aria-label={`Go to image ${index + 1}`}
                             ></button>
