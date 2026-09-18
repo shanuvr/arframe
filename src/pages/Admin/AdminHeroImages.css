@@ -238,6 +238,33 @@
     gap: 4px;
 }
 
+.hero-set-first-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.6);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.hero-set-first-btn:hover {
+    background: #d4af37;
+    color: #000000;
+    border-color: #d4af37;
+}
+
 .hero-thumb-top-actions {
     position: absolute;
     top: 6px;
