@@ -1,25 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../../api/axios.js';
 import './FeaturedProjects.css';
 
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
+
+const getImageUrl = (img) => {
+    if (!img) return FALLBACK_IMAGE;
+    if (img.startsWith('http') || img.startsWith('/')) return img;
+    return `${IMAGE_BASE_URL}${img}`;
+};
+
+const getProjectSubtitle = (project) => {
+    const parts = [];
+    if (project.location) parts.push(project.location);
+    if (project.builtup_area) parts.push(project.builtup_area);
+    if (parts.length > 0) return parts.join(' | ');
+    return project.category_name || '';
+};
+
 const FeaturedProjects = () => {
-    const projects = [
-        {
-            img: '/1784716807588%281%29%281%29.png',
-            title: 'Contemporary Residence',
-            location: 'Thrissur, Kerala | 3000 Sq.Ft',
-        },
-        {
-            img: '/1784717375498%281%29.png',
-            title: 'Raabta Luxury Villa',
-            location: 'Thrissur, Kerala | 2400 Sq.Ft',
-        },
-        {
-            img: '/52138.jpeg',
-            title: 'Aaswatham Premium',
-            location: 'Thrissur, Kerala | 3200 Sq.Ft',
-        },
-    ];
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchFeaturedProjects = async () => {
+            try {
+                setLoading(true);
+                const response = await api.get('/api/projects?page=1&limit=3');
+                if (isMounted && response.data) {
+                    const projectList = response.data.data || [];
+                    setProjects(projectList.slice(0, 3));
+                }
+            } catch (err) {
+                console.error('Failed to fetch featured projects:', err);
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchFeaturedProjects();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     return (
         <section className="projects-section" id="projects">
@@ -34,17 +64,37 @@ const FeaturedProjects = () => {
                     </Link>
                 </div>
 
-                <div className="projects-grid">
-                    {projects.map((project, index) => (
-                        <a key={index} href="#projects" className="project-card">
-                            <div className="project-img-wrapper">
-                                <img src={project.img} alt={project.title} />
+                {loading ? (
+                    <div className="projects-grid">
+                        {[1, 2, 3].map((n) => (
+                            <div key={n} className="project-card skeleton-card">
+                                <div className="project-img-wrapper skeleton-box"></div>
+                                <div className="skeleton-line title"></div>
+                                <div className="skeleton-line subtitle"></div>
                             </div>
-                            <h4>{project.title}</h4>
-                            <p>{project.location}</p>
-                        </a>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ) : projects.length > 0 ? (
+                    <div className="projects-grid">
+                        {projects.map((project) => (
+                            <Link
+                                key={project.id}
+                                to={`/projects/${project.id}`}
+                                className="project-card"
+                            >
+                                <div className="project-img-wrapper">
+                                    <img
+                                        src={getImageUrl(project.project_image || (project.images && project.images[0]))}
+                                        alt={project.project_name}
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <h4>{project.project_name}</h4>
+                                <p>{getProjectSubtitle(project)}</p>
+                            </Link>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         </section>
     );
