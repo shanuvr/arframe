@@ -13,13 +13,11 @@ export const buildImageUrl = (img) => {
 export const DEFAULT_HERO_IMAGES = {
     home_hero: {
         images: [
-            '/HERO/Hero1.jpg',
-            '/HERO/hero2.jpg',
-            '/HERO/hero3.jpg',
-            '/HERO/hero4.jpg',
-            '/HERO/hero5.jpg',
-            '/HERO/hero6.jpg',
-            '/HERO/hero7.jpg',
+            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80',
         ],
     },
     projects_hero: { image: '/pagehero/projectshero.jpg' },

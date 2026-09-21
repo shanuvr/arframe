@@ -4,34 +4,40 @@ import './Expertise.css';
 const Expertise = () => {
     const services = [
         {
-            img: '/1784187873891%281%29.png',
-            icon: 'fa-solid fa-house',
+            num: '01',
+            icon: 'fa-solid fa-house-chimney',
             title: 'Residential Construction',
+            description: 'Bespoke residential designs and precision-built luxury homes tailored to your lifestyle.',
         },
         {
-            img: '/1784189865361%281%29.png',
+            num: '02',
             icon: 'fa-solid fa-building',
             title: 'Commercial Construction',
+            description: 'High-performance commercial spaces, corporate complexes, and retail developments.',
         },
         {
-            img: '/1784192661079%281%29.png',
-            icon: 'fa-solid fa-pen-ruler',
+            num: '03',
+            icon: 'fa-solid fa-compass-drafting',
             title: 'Architecture & Planning',
+            description: 'Innovative structural designs, comprehensive blueprints, and 3D architectural modeling.',
         },
         {
-            img: '/1784193892122%281%29.png',
+            num: '04',
             icon: 'fa-solid fa-couch',
             title: 'Interior Design',
+            description: 'Harmonious, luxury interior styling blending functionality with contemporary elegance.',
         },
         {
-            img: '/1784197586258%281%29.png',
-            icon: 'fa-solid fa-hammer',
+            num: '05',
+            icon: 'fa-solid fa-trowel-bricks',
             title: 'Renovation & Remodeling',
+            description: 'Modernizing and revitalizing existing structures with cutting-edge craftsmanship.',
         },
         {
-            img: '/1784198356718%281%29.png',
+            num: '06',
             icon: 'fa-solid fa-helmet-safety',
             title: 'Project Management',
+            description: 'End-to-end site supervision, timeline oversight, quality control, and budget adherence.',
         },
     ];
 
@@ -59,13 +65,17 @@ const Expertise = () => {
                 <div className="expertise-grid">
                     {services.map((service, index) => (
                         <div key={index} className="expertise-card">
-                            <div className="expertise-image">
-                                <img src={service.img} alt={service.title} />
+                            <div className="expertise-card-header">
+                                <div className="expertise-icon-box">
+                                    <i className={service.icon}></i>
+                                </div>
+                                <span className="expertise-number">{service.num}</span>
                             </div>
                             <div className="expertise-content">
-                                <i className={service.icon}></i>
                                 <h3>{service.title}</h3>
+                                <p className="expertise-desc">{service.description}</p>
                             </div>
+                            <div className="expertise-card-accent"></div>
                         </div>
                     ))}
                 </div>

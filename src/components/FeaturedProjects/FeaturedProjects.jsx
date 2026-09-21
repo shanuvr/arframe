@@ -12,14 +12,6 @@ const getImageUrl = (img) => {
     return `${IMAGE_BASE_URL}${img}`;
 };
 
-const getProjectSubtitle = (project) => {
-    const parts = [];
-    if (project.location) parts.push(project.location);
-    if (project.builtup_area) parts.push(project.builtup_area);
-    if (parts.length > 0) return parts.join(' | ');
-    return project.category_name || '';
-};
-
 const FeaturedProjects = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,6 +29,9 @@ const FeaturedProjects = () => {
                 }
             } catch (err) {
                 console.error('Failed to fetch featured projects:', err);
+                if (isMounted) {
+                    setProjects([]);
+                }
             } finally {
                 if (isMounted) {
                     setLoading(false);
@@ -51,50 +46,91 @@ const FeaturedProjects = () => {
         };
     }, []);
 
+    if (!loading && projects.length === 0) {
+        return null;
+    }
+
     return (
-        <section className="projects-section" id="projects">
+        <section className="featured-projects-section" id="projects">
             <div className="container">
                 <div className="section-header-flex">
-                    <div>
+                    <div className="section-title-group">
                         <span className="section-subtitle">OUR WORKS</span>
-                        <h2>Featured Projects</h2>
+                        <h2>Featured <span>Projects</span></h2>
+                        <p className="section-desc">Explore our handpicked collection of signature architectural marvels.</p>
                     </div>
-                    <Link to="/projects" className="view-all-link">
-                        View All Projects <i className="fa-solid fa-arrow-right"></i>
+                    <Link to="/projects" className="view-all-btn">
+                        <span>View All Projects</span>
+                        <i className="fa-solid fa-arrow-right"></i>
                     </Link>
                 </div>
 
                 {loading ? (
-                    <div className="projects-grid">
+                    <div className="featured-projects-grid">
                         {[1, 2, 3].map((n) => (
-                            <div key={n} className="project-card skeleton-card">
-                                <div className="project-img-wrapper skeleton-box"></div>
-                                <div className="skeleton-line title"></div>
-                                <div className="skeleton-line subtitle"></div>
+                            <div key={n} className="featured-project-card skeleton-card">
+                                <div className="featured-img-wrapper skeleton-box"></div>
+                                <div className="featured-card-body">
+                                    <div className="skeleton-line title"></div>
+                                    <div className="skeleton-line subtitle"></div>
+                                </div>
                             </div>
                         ))}
                     </div>
-                ) : projects.length > 0 ? (
-                    <div className="projects-grid">
-                        {projects.map((project) => (
-                            <Link
-                                key={project.id}
-                                to={`/projects/${project.id}`}
-                                className="project-card"
-                            >
-                                <div className="project-img-wrapper">
-                                    <img
-                                        src={getImageUrl(project.project_image || (project.images && project.images[0]))}
-                                        alt={project.project_name}
-                                        loading="lazy"
-                                    />
-                                </div>
-                                <h4>{project.project_name}</h4>
-                                <p>{getProjectSubtitle(project)}</p>
-                            </Link>
-                        ))}
+                ) : (
+                    <div className="featured-projects-grid">
+                        {projects.map((project) => {
+                            const imgSrc = getImageUrl(project.project_image || (project.images && project.images[0]));
+                            return (
+                                <Link
+                                    key={project.id}
+                                    to={`/projects/${project.id}`}
+                                    className="featured-project-card"
+                                >
+                                    <div className="featured-img-wrapper">
+                                        <img
+                                            src={imgSrc}
+                                            alt={project.project_name}
+                                            loading="lazy"
+                                        />
+                                        <div className="featured-img-overlay">
+                                            <span className="featured-view-badge">
+                                                <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                            </span>
+                                        </div>
+                                        {project.category_name && (
+                                            <span className="featured-category-tag">
+                                                {project.category_name}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="featured-card-body">
+                                        <h4>{project.project_name}</h4>
+                                        <div className="featured-meta-info">
+                                            {project.location && (
+                                                <span className="featured-location">
+                                                    <i className="fa-solid fa-location-dot"></i> {project.location}
+                                                </span>
+                                            )}
+                                            {project.builtup_area && (
+                                                <span className="featured-area">
+                                                    <i className="fa-solid fa-ruler-combined"></i> {project.builtup_area}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="featured-card-footer">
+                                            <span className="featured-explore-link">
+                                                Explore Details <i className="fa-solid fa-arrow-right"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="featured-card-accent"></div>
+                                </Link>
+                            );
+                        })}
                     </div>
-                ) : null}
+                )}
             </div>
         </section>
     );

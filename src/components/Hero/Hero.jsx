@@ -22,15 +22,22 @@ const Hero = () => {
     //     'Interior Excellence',
     // ];
 
-    // Auto-scroll images every 5 seconds
+    // Auto-scroll images every 2 seconds (2000ms) with instant preloading
     useEffect(() => {
         if (heroImages.length === 0) return;
+
+        // Preload all hero images so switching is instant without browser delay
+        heroImages.forEach((src) => {
+            const img = new Image();
+            img.src = src;
+        });
+
         const timer = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-        }, 5000);
+        }, 2000);
 
         return () => clearInterval(timer);
-    }, [heroImages.length]);
+    }, [heroImages]);
 
     const handlePrevImage = () => {
         setCurrentImageIndex((prevIndex) =>

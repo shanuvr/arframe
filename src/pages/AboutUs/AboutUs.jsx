@@ -37,7 +37,7 @@ const AboutUs = () => {
               <p className="story-tagline"><strong>AFrame Builders &mdash; building for today, with the strength to stand the test of time.</strong></p>
             </div>
             <div className="story-image fade-in-right">
-              <img src="/1784192661079%281%29.png" alt="Modern Architecture Office" />
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80" alt="Modern Architecture Office" />
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ const AboutUs = () => {
       </section>
 
       {/* Statistics Section */}
-      <section className="stats-section section-padding" style={{ backgroundImage: "url('/1784187873891%281%29.png')" }}>
+      <section className="stats-section section-padding" style={{ backgroundImage: "url('/52138.jpeg')" }}>
         <div className="stats-overlay">
           <div className="container">
             <div className="stats-grid">

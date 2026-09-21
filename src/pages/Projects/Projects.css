@@ -1,3 +1,22 @@
+.page-hero .hero-content h1 {
+  font-family: var(--font-heading, 'Marcellus', serif);
+  font-size: 3.5rem;
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  margin-bottom: 12px;
+}
+
+.page-hero .hero-content h1 span {
+  color: var(--primary, #FFC107) !important;
+}
+
+.page-hero .hero-content p {
+  color: #e5e5e5 !important;
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
 .projects-section {
   background-color: #ffffff;
 }

@@ -6,15 +6,15 @@ const Footer = () => {
     const quickLinks = [
         { label: 'Home', to: '/' },
         { label: 'About Us', to: '/about' },
-        { label: 'Design Excellence', to: '/design' },
         { label: 'Projects', to: '/projects' },
+        { label: 'Contact Us', to: '/contact' },
     ];
 
     const services = [
-        { label: 'Residential', to: '/design' },
-        { label: 'Commercial', to: '/design' },
-        { label: 'Architecture', to: '/design' },
-        { label: 'Interior Design', to: '/design' },
+        { label: 'Residential', to: '/projects' },
+        { label: 'Commercial', to: '/projects' },
+        { label: 'Architecture', to: '/projects' },
+        { label: 'Interior Design', to: '/projects' },
     ];
 
     return (

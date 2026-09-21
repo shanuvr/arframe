@@ -17,7 +17,19 @@ const getMessage = (progress) => {
 };
 
 const buildCriticalList = (settings) => {
-    const list = [];
+    const list = [
+        '/logo/logowhite.png',
+        '/logo/logodark.png',
+        '/beyondexpectations.jpeg',
+        '/52138.jpeg',
+        '/before-after/beforea1.jpg',
+        '/before-after/beoforea2.jpg',
+        '/before-after/beforeb1.jpg',
+        '/before-after/beforeb2.jpg',
+        '/designexcellence/Concept Sketch.jpg',
+        '/designexcellence/3D Visualization.jpg',
+        '/designexcellence/Finished Project.jpg',
+    ];
     const push = (u) => {
         const url = buildImageUrl(u);
         if (url) list.push(url);
@@ -27,7 +39,6 @@ const buildCriticalList = (settings) => {
     push(settings?.about_hero?.image);
     push(settings?.contact_hero?.image);
     push(settings?.design_hero?.image);
-    push('/beyondexpectations.jpeg');
     return list;
 };
 
@@ -51,13 +62,17 @@ const Preloader = () => {
 
     useEffect(() => {
         document.body.classList.add('preload-lock');
+        if (window.lenis) window.lenis.stop();
         let holdTimer;
         let finishTimer;
         let raf;
         let completed = false;
         let imageWeight = 0;
         let active = true;
-        const releaseLock = () => document.body.classList.remove('preload-lock');
+        const releaseLock = () => {
+            document.body.classList.remove('preload-lock');
+            if (window.lenis) window.lenis.start();
+        };
 
         const finish = () => {
             if (completed) return;
