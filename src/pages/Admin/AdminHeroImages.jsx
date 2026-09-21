@@ -13,7 +13,31 @@ import './AdminHeroImages.css';
 let uidCounter = 0;
 const makeUid = () => `img-${Date.now()}-${uidCounter++}`;
 
-const mapHome = (list) => (list || []).map((src) => ({ uid: makeUid(), kind: 'existing', src, file: null }));
+const mapHome = (list) =>
+    (list || []).map((item) => {
+        if (typeof item === 'object' && item !== null) {
+            const raw = item.image_url || item.src || '';
+            return {
+                uid: makeUid(),
+                id: item.id || null,
+                kind: 'existing',
+                src: raw,
+                preview: buildImageUrl(raw),
+                isFirst: Boolean(item.is_first),
+                file: null,
+            };
+        }
+        const raw = item || '';
+        return {
+            uid: makeUid(),
+            id: null,
+            kind: 'existing',
+            src: raw,
+            preview: buildImageUrl(raw),
+            isFirst: false,
+            file: null,
+        };
+    });
 
 const singleFrom = (src) => {
     const value = src || '';
@@ -62,7 +86,7 @@ const SingleHeroCard = ({ icon, title, desc, hero, onFileChange, onRemove, onRes
 
                 <div className="single-hero-info">
                     <p className="single-hero-note">
-                        Recommended size: 1920 × 900px. The image is displayed as a full-width page banner.
+                        Recommended size: 1920 × 900px. The image is stored in R2 (Heroimages) and displayed as a full-width page banner.
                     </p>
                     <div className="single-hero-actions">
                         <button type="button" className="hero-btn primary" onClick={() => fileRef.current?.click()}>
@@ -107,7 +131,6 @@ const AdminHeroImages = () => {
     const [projects, setProjects] = useState(singleFrom(''));
     const [about, setAbout] = useState(singleFrom(''));
     const [contact, setContact] = useState(singleFrom(''));
-    const [design, setDesign] = useState(singleFrom(''));
 
     const homeFileInput = useRef(null);
 
@@ -125,12 +148,14 @@ const AdminHeroImages = () => {
                 const res = await api.get(HERO_IMAGES_ENDPOINT);
                 raw = (res.data && (res.data.data || res.data)) || {};
             } catch (err) {
-                console.error('Failed to load hero images:', err);
+                console.error('Failed to load hero images from D1:', err);
             }
             if (!active) return;
 
             const homeList =
-                Array.isArray(raw.home_hero?.images) && raw.home_hero.images.length
+                Array.isArray(raw.home_hero?.items) && raw.home_hero.items.length
+                    ? raw.home_hero.items
+                    : Array.isArray(raw.home_hero?.images) && raw.home_hero.images.length
                     ? raw.home_hero.images
                     : DEFAULT_HERO_IMAGES.home_hero.images;
 
@@ -138,7 +163,6 @@ const AdminHeroImages = () => {
             setProjects(singleFrom(raw.projects_hero?.image));
             setAbout(singleFrom(raw.about_hero?.image));
             setContact(singleFrom(raw.contact_hero?.image));
-            setDesign(singleFrom(raw.design_hero?.image));
             setLoading(false);
         })();
 
@@ -151,7 +175,18 @@ const AdminHeroImages = () => {
         files.forEach((file) => {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setHomeItems((prev) => [...prev, { uid: makeUid(), kind: 'new', src: reader.result, file }]);
+                setHomeItems((prev) => [
+                    ...prev,
+                    {
+                        uid: makeUid(),
+                        id: null,
+                        kind: 'new',
+                        src: reader.result,
+                        preview: reader.result,
+                        file,
+                        isFirst: false,
+                    },
+                ]);
             };
             reader.readAsDataURL(file);
         });
@@ -163,6 +198,16 @@ const AdminHeroImages = () => {
             if (target < 0 || target >= prev.length) return prev;
             const next = [...prev];
             [next[index], next[target]] = [next[target], next[index]];
+            return next;
+        });
+    };
+
+    const setAsFirst = (index) => {
+        setHomeItems((prev) => {
+            if (index <= 0 || index >= prev.length) return prev;
+            const next = [...prev];
+            const [target] = next.splice(index, 1);
+            next.unshift(target);
             return next;
         });
     };
@@ -188,22 +233,28 @@ const AdminHeroImages = () => {
         try {
             const fd = new FormData();
 
+            fd.append('home_total_items', String(homeItems.length));
+            homeItems.forEach((item, index) => {
+                if (item.kind === 'new' && item.file) {
+                    fd.append(`home_item_${index}_type`, 'new');
+                    fd.append(`home_item_${index}_file`, item.file);
+                } else {
+                    fd.append(`home_item_${index}_type`, 'existing');
+                    fd.append(`home_item_${index}_url`, item.src);
+                }
+            });
+
             homeItems.forEach((item) => {
                 if (item.kind === 'existing') {
                     fd.append('home_keep_images', item.src);
-                } else {
+                } else if (item.file) {
                     fd.append('home_new_images', item.file);
                 }
             });
-            const firstExisting = homeItems.find((item) => item.kind === 'existing');
-            if (firstExisting) {
-                fd.append('home_cover_image', firstExisting.src);
-            }
 
             appendSingle(fd, 'projects', projects);
             appendSingle(fd, 'about', about);
             appendSingle(fd, 'contact', contact);
-            appendSingle(fd, 'design', design);
 
             await api.put(HERO_IMAGES_ENDPOINT, fd, {
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -211,15 +262,16 @@ const AdminHeroImages = () => {
             invalidateHeroImages();
             setStatus({
                 type: 'success',
-                message: 'Hero images saved successfully. The public site will now use the updated images.',
+                message: 'Hero images saved successfully',
             });
         } catch (err) {
             console.error('Failed to save hero images:', err);
             setStatus({
                 type: 'error',
                 message:
+                    err.response?.data?.error ||
                     err.response?.data?.message ||
-                    'Could not save changes — the hero images endpoint is not ready yet. Your edits remain previewed below.',
+                    'Could not save changes to Cloudflare D1 / R2.',
             });
         } finally {
             setSaving(false);
@@ -305,11 +357,20 @@ const AdminHeroImages = () => {
                                 <div className="hero-thumbnails">
                                     {homeItems.map((item, index) => (
                                         <div key={item.uid} className={`hero-thumb ${index === 0 ? 'is-first' : ''}`}>
-                                            <img src={item.src} alt={`Hero slide ${index + 1}`} />
-                                            {index === 0 && (
+                                            <img src={item.preview || buildImageUrl(item.src)} alt={`Hero slide ${index + 1}`} />
+                                            {index === 0 ? (
                                                 <span className="hero-first-badge">
-                                                    <i className="fa-solid fa-star"></i> First
+                                                    <i className="fa-solid fa-star"></i> Primary (First)
                                                 </span>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    className="hero-set-first-btn"
+                                                    title="Set as First Image"
+                                                    onClick={() => setAsFirst(index)}
+                                                >
+                                                    <i className="fa-solid fa-star"></i> Set First
+                                                </button>
                                             )}
                                             <div className="hero-thumb-top-actions">
                                                 <button
@@ -367,17 +428,6 @@ const AdminHeroImages = () => {
                             onFileChange={handleSingleFile(setAbout)}
                             onRemove={() => setAbout((prev) => ({ ...prev, removed: true, newFile: null, newPreview: '' }))}
                             onRestore={() => restoreSingle('about_hero', setAbout)}
-                        />
-                        <SingleHeroCard
-                            icon="fa-pen-ruler"
-                            title="Design Excellence Page Hero"
-                            desc="Full-width banner at the top of the Design Excellence page."
-                            hero={design}
-                            onFileChange={handleSingleFile(setDesign)}
-                            onRemove={() =>
-                                setDesign((prev) => ({ ...prev, removed: true, newFile: null, newPreview: '' }))
-                            }
-                            onRestore={() => restoreSingle('design_hero', setDesign)}
                         />
                         <SingleHeroCard
                             icon="fa-envelope"
