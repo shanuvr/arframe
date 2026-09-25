@@ -13,7 +13,7 @@
 
 .section-title-group .section-subtitle {
     display: inline-block;
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -29,7 +29,7 @@
 }
 
 .section-title-group h2 span {
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
 }
 
 .section-title-group .section-desc {
@@ -56,7 +56,7 @@
 }
 
 .view-all-btn i {
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
     transition: transform 0.3s ease;
 }
 
@@ -69,7 +69,7 @@
 
 .view-all-btn:hover i {
     transform: translateX(4px);
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
 }
 
 /* ===== GRID & CARD ARCHITECTURE ===== */
@@ -96,8 +96,8 @@
 
 .featured-project-card:hover {
     transform: translateY(-8px);
-    border-color: rgba(197, 160, 89, 0.45);
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.14), 0 6px 18px rgba(197, 160, 89, 0.22);
+    border-color: rgba(255, 193, 7, 0.45);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.14), 0 6px 18px rgba(255, 193, 7, 0.22);
 }
 
 .featured-img-wrapper {
@@ -139,8 +139,8 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--primary-color, #c5a059);
-    color: #ffffff;
+    background: var(--primary, #FFC107);
+    color: #111111;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,7 +196,7 @@
 }
 
 .featured-project-card:hover .featured-card-body h4 {
-    color: var(--primary-dark, #a48243);
+    color: var(--primary-dark, #E0A800);
 }
 
 .featured-meta-info {
@@ -219,7 +219,7 @@
 
 .featured-location i,
 .featured-area i {
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
     font-size: 12px;
 }
 
@@ -237,7 +237,7 @@
     font-weight: 600;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
     transition: all 0.3s ease;
 }
 
@@ -251,7 +251,7 @@
 
 .featured-project-card:hover .featured-explore-link i {
     transform: translateX(4px);
-    color: var(--primary-color, #c5a059);
+    color: var(--primary, #FFC107);
 }
 
 .featured-card-accent {
@@ -260,7 +260,7 @@
     left: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(90deg, #c5a059, #e0c88f);
+    background: linear-gradient(90deg, #FFC107, #FFE082);
     transition: width 0.35s ease;
 }
 

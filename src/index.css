@@ -1,7 +1,8 @@
 /* --- GLOBAL RESET & VARIABLES --- */
 :root {
-  --primary: #c5a059;
-  --primary-dark: #a48243;
+  --primary: #FFC107;
+  --primary-dark: #E0A800;
+  --primary-color: var(--primary);
   --gold: var(--primary);
   --dark: #111111;
   --dark-light: #1a1a1a;
