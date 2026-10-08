@@ -23,9 +23,10 @@ const Footer = () => {
                 <div className="footer-brand">
                     <Link to="/" className="footer-logo-container">
                         <img src="/logo/logowhite.png" alt="Aframe Builders Logo" className="footer-logo-img" />
+                        <span className="footer-logo-tagline">A Frame To Transcend Time</span>
                     </Link>
                     <p>
-                        A Frame To Transcend Time. Designing and constructing timeless spaces with precision, passion and
+                        Designing and constructing timeless spaces with precision, passion and
                         perfection.
                     </p>
                 </div>
@@ -60,7 +61,7 @@ const Footer = () => {
                     </div>
                     <div className="footer-contact-item">
                         <i className="fa-solid fa-envelope"></i>
-                        <span>aframe.ind@gmail.com</span>
+                        <span>aframebuilders.ind@gmail.com</span>
                     </div>
                     <div className="footer-social-icons">
                         <a href="https://www.instagram.com/aframe_builders?stkn=MTA1bXRmdWRoNmQ1cA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fa-brands fa-instagram"></i></a>

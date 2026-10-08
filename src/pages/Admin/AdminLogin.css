@@ -56,6 +56,15 @@
     margin: 0 auto;
 }
 
+.login-logo-tagline {
+    display: block;
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8c8c8c;
+    margin-top: 4px;
+}
+
 .login-brand h2 {
     font-size: 1.5rem;
     color: #1a1a1a;

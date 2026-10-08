@@ -47,6 +47,14 @@
     display: block;
 }
 
+.admin-logo-tagline {
+    font-size: 7.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #718096;
+    font-weight: 500;
+}
+
 .sidebar-brand .logo-icon {
     font-size: 26px;
     color: #d4a017;

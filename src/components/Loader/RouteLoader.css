@@ -23,6 +23,15 @@
     opacity: 0.85;
 }
 
+.route-loader-tagline {
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #888888;
+    margin-top: -8px;
+    margin-bottom: 2px;
+}
+
 .route-loader-spinner {
     display: flex;
     align-items: center;

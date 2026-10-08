@@ -46,6 +46,7 @@ const AdminLogin = () => {
             <div className="login-card fade-in-up">
                 <div className="login-brand">
                     <img src="/logo/logodark.png" alt="Aframe Builders Logo" className="login-logo-img" />
+                    <span className="login-logo-tagline">A Frame To Transcend Time</span>
                     <p className="admin-badge" style={{ marginTop: '12px' }}>Control Center</p>
                 </div>
 

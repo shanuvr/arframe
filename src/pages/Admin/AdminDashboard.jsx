@@ -128,6 +128,7 @@ const AdminDashboard = () => {
                     <i className="fa-solid fa-compass-drafting logo-icon"></i>
                     <div className="logo-text">
                         AFRAME
+                        <span style={{ display: 'block', fontSize: '7.5px', letterSpacing: '1.5px', textTransform: 'uppercase', color: '#888', marginTop: '2px' }}>A Frame To Transcend Time</span>
                         <span>ADMIN PORTAL</span>
                     </div>
                 </div>

@@ -12,16 +12,35 @@
 }
 
 .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-decoration: none;
+    gap: 4px;
 }
 
 .logo-img {
-    height: 58px;
+    height: 56px;
     width: auto;
     object-fit: contain;
     display: block;
+}
+
+.logo-tagline {
+    font-size: 10px;
+    font-family: var(--font-body);
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: #ffffff;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    transition: color 0.3s ease;
+}
+
+.logo-container:hover .logo-tagline {
+    color: var(--primary);
 }
 
 .logo-icon {
@@ -47,14 +66,17 @@
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 30px;
+    gap: 32px;
+    align-items: center;
 }
 
 .nav-links a {
     color: #ffffff;
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     transition: var(--transition);
 }
 
@@ -192,20 +214,20 @@
         align-items: center;
         gap: 14px;
         padding: 14px 16px;
-        color: #dcdcdc;
+        color: #ffffff;
         text-decoration: none;
-        font-size: 13px;
+        font-size: 14.5px;
         font-weight: 600;
         letter-spacing: 1.5px;
         border-radius: 6px;
         border-left: 3px solid transparent;
         transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255, 255, 255, 0.04);
     }
 
     .drawer-nav-links a .nav-icon {
-        font-size: 15px;
-        color: #888888;
+        font-size: 16px;
+        color: #b0b8c4;
         width: 20px;
         text-align: center;
         transition: color 0.3s ease;
@@ -214,7 +236,7 @@
     .drawer-nav-links a:hover,
     .drawer-nav-links a.active {
         color: #ffffff;
-        background: rgba(255, 193, 7, 0.1);
+        background: rgba(255, 193, 7, 0.15);
         border-left-color: var(--primary);
         padding-left: 20px;
     }

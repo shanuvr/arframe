@@ -113,8 +113,8 @@ const ContactUs = () => {
                 <div className="info-item">
                   <div className="info-icon"><i className="fa-solid fa-location-dot"></i></div>
                   <div className="info-text">
-                    <h4>Headquarters</h4>
-                    <p>123 Architecture Blvd, Design District, NY 10001</p>
+                    <h4>Office Address</h4>
+                    <p>403, RIED Square Building, Chungam Jn, Westfort, Thrissur - 680003</p>
                   </div>
                 </div>
                 
@@ -130,7 +130,7 @@ const ContactUs = () => {
                   <div className="info-icon"><i className="fa-solid fa-envelope"></i></div>
                   <div className="info-text">
                     <h4>Email Inquiry</h4>
-                    <p>aframe.ind@gmail.com</p>
+                    <p>aframebuilders.ind@gmail.com</p>
                   </div>
                 </div>
                 
