@@ -11,63 +11,6 @@
     overflow: hidden;
 }
 
-/* Navbar inside hero (keeps nav on top of hero background) */
-.hero .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 5%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-icon {
-    font-size: 28px;
-    color: var(--primary);
-}
-
-.logo-text {
-    font-size: 20px;
-    line-height: 1;
-}
-
-.logo-text span {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: #ccc;
-    margin-top: 2px;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 30px;
-}
-
-.nav-links a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: var(--transition, all 0.3s ease);
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-    color: var(--primary);
-}
-
 /* Hero content centered */
 .hero-content {
     max-width: 850px;

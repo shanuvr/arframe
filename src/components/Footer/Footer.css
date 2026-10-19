@@ -9,28 +9,33 @@
 .footer .footer-logo-container {
     display: inline-flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     text-decoration: none;
-    gap: 4px;
+    gap: 3px;
     margin-bottom: 18px;
+    max-width: fit-content;
 }
 
 .footer .footer-logo-img {
-    height: 60px;
+    height: 52px;
     width: auto;
     object-fit: contain;
     display: block;
 }
 
 .footer .footer-logo-tagline {
-    font-size: 10.5px;
+    font-size: 6.8px;
     font-family: var(--font-body);
-    letter-spacing: 2.2px;
+    letter-spacing: 0.95px;
     text-transform: uppercase;
-    color: #ffffff;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+    font-weight: 600;
     line-height: 1;
     white-space: nowrap;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    display: block;
     transition: color 0.3s ease;
 }
 
@@ -211,6 +216,15 @@
     .footer-brand .footer-logo-container {
         align-items: center;
         justify-content: center;
+    }
+
+    .footer-brand .footer-logo-img {
+        height: 44px;
+    }
+
+    .footer-brand .footer-logo-tagline {
+        font-size: 5.6px;
+        letter-spacing: 0.65px;
     }
 
     .footer-brand p {

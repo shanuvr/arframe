@@ -22,10 +22,10 @@ const FeaturedProjects = () => {
         const fetchFeaturedProjects = async () => {
             try {
                 setLoading(true);
-                const response = await api.get('/api/projects?page=1&limit=3');
+                const response = await api.get('/api/projects?page=1&limit=6');
                 if (isMounted && response.data) {
                     const projectList = response.data.data || [];
-                    setProjects(projectList.slice(0, 3));
+                    setProjects(projectList.slice(0, 6));
                 }
             } catch (err) {
                 console.error('Failed to fetch featured projects:', err);
@@ -67,7 +67,7 @@ const FeaturedProjects = () => {
 
                 {loading ? (
                     <div className="featured-projects-grid">
-                        {[1, 2, 3].map((n) => (
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
                             <div key={n} className="featured-project-card skeleton-card">
                                 <div className="featured-img-wrapper skeleton-box"></div>
                                 <div className="featured-card-body">

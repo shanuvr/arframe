@@ -29,12 +29,12 @@ const AboutUs = () => {
         <div className="container">
           <div className="story-grid">
             <div className="story-text fade-in-left">
-              <h2>Our <span>Story</span></h2>
-              <p>Founded in 2020 by <strong>Rajeev K R</strong>, AFrame Builders was established with a simple belief: a building should not merely look good when it is completed&mdash;it should be built to last.</p>
-              <p>At Aframe Builders, design is a promise, and construction is how we keep it. We build not for the moment, but for the decades that will test it&mdash;because true craftsmanship doesn't announce itself, it simply outlasts. Our reputation rests on three principles: quality, durability and professionalism. From design to final finish, we never compromise on construction quality&mdash;choosing the most reasonable cost without ever compromising the strength, safety or longevity of the structure.</p>
-              <p>Our work extends across &lsquo;Residential, Commercial construction, Steel Building, renovation and interior&rsquo; works, allowing us to be involved in projects from structural development to the details that make a space complete.</p>
-              <p>For us, every project is a responsibility entrusted to us by our client. We take that responsibility seriously&mdash;working with sincerity, precision and a commitment to delivering what we promise.</p>
-              <p className="story-tagline"><strong>AFrame Builders &mdash; building for today, with the strength to stand the test of time.</strong></p>
+              <span className="section-subtitle">COMPANY OVERVIEW</span>
+              <h2>About <span>AFRAME Builders</span></h2>
+              <p>Founded in 2020, AFRAME Builders is a full-service architectural design and construction firm based in Thrissur, Kerala. Built on a foundation of uncompromised quality and engineering precision, we deliver complete turn-key solutions spanning residential, commercial, and industrial sectors.</p>
+              <p>From conceptual architectural design to structural execution, interior design, and large-scale renovations, our expertise spans a wide range of building styles and structural requirements. We specialize in Pre-Engineered Building (PEB) structures and reinforced concrete (RCC) construction for industrial plants, godowns, and commercial spaces, backed by a dedicated team equipped to handle complex engineering and regulatory approval workflows.</p>
+              <p>Driven by our core vision&mdash;<strong>&ldquo;A frame to transcend time&rdquo;</strong>&mdash;we focus on rigorous material standards, precision execution, and structural integrity to create spaces built to last for generations.</p>
+              <p className="story-tagline"><strong>AFRAME Builders &mdash; driven by our core vision, &ldquo;A frame to transcend time.&rdquo;</strong></p>
             </div>
             <div className="story-image fade-in-right">
               <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80" alt="Modern Architecture Office" />
@@ -46,16 +46,59 @@ const AboutUs = () => {
       {/* Vision & Mission */}
       <section className="vision-mission-section section-padding">
         <div className="container">
+          <div className="section-header text-center fade-in-up">
+            <span className="section-subtitle">STRATEGIC DIRECTION</span>
+            <h2>Vision &amp; <span>Mission</span></h2>
+            <div className="section-header-line"></div>
+          </div>
+
           <div className="vision-mission-grid">
-            <div className="card fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <i className="fa-solid fa-eye card-icon"></i>
-              <h3>Our Vision</h3>
-              <p>To redefine urban landscapes with sustainable, innovative, and aesthetically profound architectural solutions that stand the test of time.</p>
+            <div className="vm-card fade-in-up" style={{ animationDelay: '0.15s' }}>
+              <div className="vm-card-top">
+                <div className="vm-icon-box">
+                  <i className="fa-solid fa-eye"></i>
+                </div>
+                <span className="vm-badge">Our Vision</span>
+              </div>
+
+              <div className="vm-card-body">
+                <h3 className="vm-card-title">Vision Statement</h3>
+                <div className="vm-quote-wrap">
+                  <p className="vm-quote-text">
+                    &ldquo;To evolve into a leading national and international infrastructure powerhouse, renowned for mastering highly complex engineering challenges&mdash;from iconic architectural landmarks and institutional campuses to mega-development projects&mdash;while setting global benchmarks in structural integrity, innovation, and timeless design.&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="vm-card-footer">
+                <span className="vm-footer-pill">
+                  <i className="fa-solid fa-gem"></i> Global Benchmarks &bull; Timeless Design
+                </span>
+              </div>
             </div>
-            <div className="card fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <i className="fa-solid fa-bullseye card-icon"></i>
-              <h3>Our Mission</h3>
-              <p>Delivering uncompromised quality and exceptional design through a client-centric approach, fostering environments where people thrive.</p>
+
+            <div className="vm-card fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <div className="vm-card-top">
+                <div className="vm-icon-box">
+                  <i className="fa-solid fa-bullseye"></i>
+                </div>
+                <span className="vm-badge">Our Mission</span>
+              </div>
+
+              <div className="vm-card-body">
+                <h3 className="vm-card-title">Mission Statement</h3>
+                <div className="vm-quote-wrap">
+                  <p className="vm-quote-text">
+                    &ldquo;At AFRAME Builders, our mission is to redefine the future of infrastructure by leveraging a world-class team of architects and engineers to execute complex, large-scale projects across national and global frontiers. Driven by our belief in &lsquo;a frame to transcend time,&rsquo; we commit to uncompromised precision, engineering excellence, and end-to-end delivery&mdash;building iconic structures and critical infrastructure engineered to serve generations.&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              <div className="vm-card-footer">
+                <span className="vm-footer-pill">
+                  <i className="fa-solid fa-compass-drafting"></i> Engineering Precision &bull; End-to-End Delivery
+                </span>
+              </div>
             </div>
           </div>
         </div>

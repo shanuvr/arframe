@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './About.css';
 
 const About = () => {
@@ -21,8 +22,7 @@ const About = () => {
                 <div className="about-content">
                     <h2>Building Beyond<br />Expectations</h2>
                     <p>
-                        Founded in 2020, Aframe Builders is a premier design and construction firm led by professional engineers.
-                        We bridge innovative architectural concepts with structural reality to create timeless spaces.
+                        Founded in 2020, AFRAME Builders is a full-service architectural design and construction firm based in Thrissur, Kerala. Built on a foundation of uncompromised quality and engineering precision, we deliver complete turn-key solutions spanning residential, commercial, and industrial sectors.
                     </p>
 
                     <div className="stats-grid">
@@ -33,7 +33,7 @@ const About = () => {
                             </div>
                         ))}
                     </div>
-                    <a href="#contact" className="btn-outline-about">Read More About Us</a>
+                    <Link to="/about" className="btn-outline-about">Read More About Us</Link>
                 </div>
             </section>
         </>
