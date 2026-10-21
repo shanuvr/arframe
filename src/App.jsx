@@ -15,9 +15,12 @@ const AboutUs = lazy(() => import('./pages/AboutUs/AboutUs'));
 const DesignExcellence = lazy(() => import('./pages/DesignExcellence/DesignExcellence'));
 const Projects = lazy(() => import('./pages/Projects/Projects'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail/ProjectDetail'));
+const Gallery = lazy(() => import('./pages/Gallery/Gallery'));
 const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
+const AdminGallery = lazy(() => import('./pages/Admin/AdminGallery'));
+const AdminBeforeAfter = lazy(() => import('./pages/Admin/AdminBeforeAfter'));
 const AdminDesignExcellence = lazy(() => import('./pages/Admin/AdminDesignExcellence'));
 const AdminHeroImages = lazy(() => import('./pages/Admin/AdminHeroImages'));
 
@@ -76,6 +79,7 @@ function App() {
           <Route path="/design" element={<DesignExcellence />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<ContactUs />} />
 
           {/* Public Admin Route */}
@@ -85,6 +89,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
             <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/gallery" element={<AdminGallery />} />
+            <Route path="/admin/before-after" element={<AdminBeforeAfter />} />
             <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
             <Route path="/admin/hero-images" element={<AdminHeroImages />} />
           </Route>

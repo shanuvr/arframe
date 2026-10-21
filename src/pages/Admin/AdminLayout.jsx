@@ -52,6 +52,24 @@ const AdminLayout = ({ children, title }) => {
                     </NavLink>
 
                     <NavLink
+                        to="/admin/gallery"
+                        className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                    >
+                        <i className="fa-solid fa-photo-film"></i>
+                        <span>Gallery</span>
+                    </NavLink>
+
+                    <NavLink
+                        to="/admin/before-after"
+                        className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                    >
+                        <i className="fa-solid fa-arrows-split-up-and-left"></i>
+                        <span>Before & After</span>
+                    </NavLink>
+
+                    <NavLink
                         to="/admin/hero-images"
                         className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
                         onClick={() => setIsSidebarOpen(false)}

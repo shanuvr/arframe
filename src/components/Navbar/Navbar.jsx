@@ -26,6 +26,7 @@ const Navbar = () => {
                     {/* DESIGN EXCELLENCE link commented out */}
                     {/* <li><NavLink to="/design">DESIGN EXCELLENCE</NavLink></li> */}
                     <li><NavLink to="/projects">PROJECTS</NavLink></li>
+                    <li><NavLink to="/gallery">GALLERY</NavLink></li>
                     <li><NavLink to="/contact">CONTACT US</NavLink></li>
                 </ul>
 
@@ -67,6 +68,11 @@ const Navbar = () => {
                     <li>
                         <NavLink to="/projects" onClick={closeMenu}>
                             <i className="fa-solid fa-city nav-icon"></i> PROJECTS
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/gallery" onClick={closeMenu}>
+                            <i className="fa-solid fa-images nav-icon"></i> GALLERY
                         </NavLink>
                     </li>
                     <li>
