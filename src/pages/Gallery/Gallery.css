@@ -193,21 +193,25 @@
   transform: scale(1);
 }
 
-/* Lightbox Modal */
-.gallery-lightbox {
+/* ===== FULLSCREEN LIGHTBOX ===== */
+.gallery-lightbox-fullscreen {
   position: fixed;
   inset: 0;
-  background: rgba(17, 17, 17, 0.92);
-  backdrop-filter: blur(8px);
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-color: #000000;
   z-index: 99999;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 30px;
-  animation: fadeInModal 0.25s ease forwards;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+  animation: fsFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes fadeInModal {
+@keyframes fsFadeIn {
   from {
     opacity: 0;
   }
@@ -216,145 +220,299 @@
   }
 }
 
-.lightbox-dialog {
-  position: relative;
-  max-width: 1100px;
-  width: 100%;
-  max-height: 90vh;
+/* Floating Top Controls Header */
+.fs-top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 28px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+  z-index: 1000;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.4) 60%,
+    transparent 100%
+  );
+  pointer-events: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.lightbox-close-btn {
-  position: absolute;
-  top: -46px;
-  right: 0;
-  width: 42px;
-  height: 42px;
+.fs-top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fs-counter {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 14px;
+  border-radius: 999px;
+  letter-spacing: 1px;
+}
+
+.fs-category-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary, #FFC107);
+  background: rgba(255, 193, 7, 0.15);
+  border: 1px solid rgba(255, 193, 7, 0.35);
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.fs-top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fs-btn {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
-  font-size: 1.15rem;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
   transition: all 0.2s ease;
-  z-index: 10;
+  backdrop-filter: blur(8px);
 }
 
-.lightbox-close-btn:hover {
+.fs-btn:hover {
   background: var(--primary, #FFC107);
   color: #000000;
   border-color: var(--primary, #FFC107);
+  transform: scale(1.06);
+}
+
+.fs-btn-close:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
   transform: rotate(90deg);
 }
 
-.lightbox-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  font-size: 1.1rem;
-  cursor: pointer;
+/* Image Viewport */
+.fs-image-viewport {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+
+.fs-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  max-width: 100vw;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+.fs-image.fill {
+  object-fit: cover;
+}
+
+/* Floating Navigation Chevrons */
+.fs-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(20, 20, 20, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 1001;
+  backdrop-filter: blur(8px);
   transition: all 0.25s ease;
-  z-index: 10;
 }
 
-.lightbox-nav-btn.prev {
-  left: -64px;
+.fs-nav-btn.prev {
+  left: 24px;
 }
 
-.lightbox-nav-btn.next {
-  right: -64px;
+.fs-nav-btn.next {
+  right: 24px;
 }
 
-.lightbox-nav-btn:hover {
+.fs-nav-btn:hover {
   background: var(--primary, #FFC107);
   color: #000000;
   border-color: var(--primary, #FFC107);
+  transform: translateY(-50%) scale(1.08);
 }
 
-.lightbox-image-wrapper {
-  position: relative;
-  max-height: 80vh;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-  background: #000000;
-}
-
-.lightbox-img {
-  max-width: 100%;
-  max-height: 76vh;
-  object-fit: contain;
-  display: block;
-}
-
-.lightbox-caption {
+/* Floating Bottom Caption */
+.fs-caption-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px 24px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), transparent);
+  padding: 40px 24px 28px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.45) 60%,
+    transparent 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.lightbox-category {
-  display: block;
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  color: var(--primary, #FFC107);
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.lightbox-title {
+.fs-caption-title {
   color: #ffffff;
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin: 0;
+  font-family: var(--font-heading, 'Marcellus', serif);
+  font-size: 1.45rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.fs-caption-hint {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Hidden controls state when user taps photo */
+.gallery-lightbox-fullscreen.hide-controls .fs-top-bar,
+.gallery-lightbox-fullscreen.hide-controls .fs-caption-bar,
+.gallery-lightbox-fullscreen.hide-controls .fs-nav-btn {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.gallery-lightbox-fullscreen.hide-controls .fs-caption-bar {
+  transform: translateY(8px);
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .lightbox-nav-btn.prev {
-    left: 12px;
-  }
-  .lightbox-nav-btn.next {
-    right: 12px;
-  }
-}
-
 @media (max-width: 768px) {
   .gallery-main-section {
-    padding: 50px 16px 80px;
+    padding: 36px 12px 60px;
+  }
+  .gallery-container {
+    padding: 0;
+  }
+  .gallery-filter-bar {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .gallery-filter-pill {
+    padding: 8px 16px;
+    font-size: 0.82rem;
   }
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 18px;
+    display: block;
+    column-count: 2;
+    column-gap: 10px;
   }
-  .lightbox-dialog {
-    padding: 0 10px;
+  .gallery-card {
+    border-radius: 8px;
+    break-inside: avoid;
+    margin-bottom: 10px;
+    width: 100%;
+    display: block;
   }
-  .lightbox-close-btn {
-    top: -40px;
-    right: 10px;
+  .gallery-card-overlay {
+    padding: 10px;
+    opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(17, 17, 17, 0.88) 0%,
+      rgba(17, 17, 17, 0.35) 55%,
+      transparent 100%
+    );
   }
-  .lightbox-nav-btn {
-    width: 40px;
-    height: 40px;
+  .gallery-card-meta {
+    transform: none;
+  }
+  .gallery-card-category {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .gallery-card-title {
+    font-size: 0.78rem;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .gallery-card-zoom-icon {
+    display: none;
+  }
+
+  /* Fullscreen Lightbox Mobile Optimization */
+  .fs-top-bar {
+    padding: 16px 14px;
+  }
+  .fs-nav-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .fs-nav-btn.prev {
+    left: 8px;
+  }
+  .fs-nav-btn.next {
+    right: 8px;
+  }
+  .fs-btn {
+    width: 38px;
+    height: 38px;
     font-size: 0.95rem;
+  }
+  .fs-counter {
+    font-size: 0.78rem;
+    padding: 4px 10px;
+  }
+  .fs-category-badge {
+    display: none;
+  }
+  .fs-caption-bar {
+    padding: 30px 16px 20px;
+  }
+  .fs-caption-title {
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+  .fs-caption-hint {
+    font-size: 0.68rem;
   }
 }
