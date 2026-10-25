@@ -1,16 +1,52 @@
-# React + Vite
+# ARFRAME — Architectural Portfolio & Construction Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern architectural portfolio and client showcase web application built with **React**, **Vite**, **Lenis Momentum Scroll**, and a **Cloudflare Workers / D1 / R2** backend.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Run Descriptions & Commands
 
-## React Compiler
+Navigate to the `arframe` directory:
+```bash
+cd arframe
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Command | Description |
+|---|---|
+| `npm install` | Installs all required frontend dependencies (React, React Router, Axios, Lenis, etc.). |
+| `npm run dev` | Launches the local Vite development server with Hot Module Replacement (HMR) at `http://localhost:5173`. |
+| `npm run build` | Compiles and optimizes the production bundle into the `dist/` directory. |
+| `npm run preview` | Locally serves and previews the built production bundle from `dist/`. |
+| `npm run lint` | Runs ESLint to check for code quality and syntax issues. |
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ⚙️ Environment Variables
+
+Configure environment variables in `.env.development` or `.env.production`:
+
+```env
+VITE_API_BASE_URL=https://my-api.ajoyjohnm.workers.dev
+VITE_IMAGE_BASE_URL=https://pub-fbba380656084edda4d915551564adce.r2.dev/
+```
+
+- **`VITE_API_BASE_URL`**: Base URL of the Cloudflare Workers REST API.
+- **`VITE_IMAGE_BASE_URL`**: Public Cloudflare R2 bucket CDN URL for streaming media.
+
+---
+
+## 🧭 Page Routes & Features
+
+### Public Pages
+- **`/` (Home)**: Hero slider with dynamic banner images, About Us summary, Expertise, Featured Projects (3 live projects linking to detail pages), Proposed & Ongoing Projects horizontal slider, Before & After transformation comparisons, and Contact section.
+- **`/about`**: Company profile, vision, and team.
+- **`/projects`**: Interactive project catalogue with pagination and category filtering.
+- **`/projects/:id`**: Comprehensive project detail page featuring specs, client info, and full-resolution lightbox gallery.
+- **`/contact`**: Contact form and office location details.
+
+### Admin Dashboard (Protected by JWT)
+- **`/admin`**: Secure login portal.
+- **`/admin/projects`**: Create, edit, and delete architectural projects with multi-image R2 uploads.
+- **`/admin/gallery`** *(or `/admin/proposed-projects`)*: Upload and manage proposed & ongoing project sketches and 3D renders with automatic R2 storage in `proposed/`.
+- **`/admin/before-after`**: Manage before/after renovation transformation entries.
+- **`/admin/hero-images`**: Update dynamic hero banners across pages.
