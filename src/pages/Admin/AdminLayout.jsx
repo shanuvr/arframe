@@ -56,8 +56,8 @@ const AdminLayout = ({ children, title }) => {
                         className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
                         onClick={() => setIsSidebarOpen(false)}
                     >
-                        <i className="fa-solid fa-photo-film"></i>
-                        <span>Gallery</span>
+                        <i className="fa-solid fa-compass-drafting"></i>
+                        <span>Proposed & Ongoing</span>
                     </NavLink>
 
                     <NavLink

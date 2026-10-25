@@ -90,6 +90,7 @@ function App() {
             <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/gallery" element={<AdminGallery />} />
+            <Route path="/admin/proposed-projects" element={<AdminGallery />} />
             <Route path="/admin/before-after" element={<AdminBeforeAfter />} />
             <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
             <Route path="/admin/hero-images" element={<AdminHeroImages />} />
