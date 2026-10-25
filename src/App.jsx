@@ -19,6 +19,7 @@ const Gallery = lazy(() => import('./pages/Gallery/Gallery'));
 const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
+const AdminProposedProjects = lazy(() => import('./pages/Admin/AdminProposedProjects'));
 const AdminGallery = lazy(() => import('./pages/Admin/AdminGallery'));
 const AdminBeforeAfter = lazy(() => import('./pages/Admin/AdminBeforeAfter'));
 const AdminDesignExcellence = lazy(() => import('./pages/Admin/AdminDesignExcellence'));
@@ -89,8 +90,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
             <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/proposed-projects" element={<AdminProposedProjects />} />
             <Route path="/admin/gallery" element={<AdminGallery />} />
-            <Route path="/admin/proposed-projects" element={<AdminGallery />} />
             <Route path="/admin/before-after" element={<AdminBeforeAfter />} />
             <Route path="/admin/design-excellence" element={<AdminDesignExcellence />} />
             <Route path="/admin/hero-images" element={<AdminHeroImages />} />

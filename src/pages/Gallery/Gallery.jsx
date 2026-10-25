@@ -1,89 +1,98 @@
 import { useState, useEffect, useCallback } from 'react';
+import api from '../../api/axios.js';
 import './Gallery.css';
 
-const GALLERY_IMAGES = [
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
+
+const getImageUrl = (img) => {
+  if (!img) return 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85';
+  if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+  return `${IMAGE_BASE_URL}${img}`;
+};
+
+const DEFAULT_GALLERY_IMAGES = [
   {
     id: 1,
     title: 'Minimalist Monolith Villa',
     category: 'Architecture',
-    src: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_1_minimalist_villa.jpg'),
     aspect: 'tall',
   },
   {
     id: 2,
     title: 'Nordic Light Living Lounge',
     category: 'Interior',
-    src: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_2_nordic_lounge.jpg'),
     aspect: 'wide',
   },
   {
     id: 3,
     title: 'Glass Pavilion Horizon',
     category: 'Architecture',
-    src: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_3_glass_pavilion.jpg'),
     aspect: 'tall',
   },
   {
     id: 4,
     title: 'Artisan Walnut Dining Space',
     category: 'Interior',
-    src: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_4_walnut_dining.jpg'),
     aspect: 'square',
   },
   {
     id: 5,
     title: 'Brutalist Concrete Residence',
     category: 'Exterior',
-    src: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_5_concrete_residence.jpg'),
     aspect: 'wide',
   },
   {
     id: 6,
     title: 'Double-Height Timber Void',
     category: 'Interior',
-    src: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_6_timber_void.jpg'),
     aspect: 'tall',
   },
   {
     id: 7,
     title: 'Cantilever Coastal Retreat',
     category: 'Architecture',
-    src: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_7_coastal_retreat.jpg'),
     aspect: 'square',
   },
   {
     id: 8,
     title: 'Zen Courtyard & Infinity Deck',
     category: 'Exterior',
-    src: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_8_zen_courtyard.jpg'),
     aspect: 'wide',
   },
   {
     id: 9,
     title: 'Modern Geometric Facade',
     category: 'Architecture',
-    src: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_9_geometric_facade.jpg'),
     aspect: 'tall',
   },
   {
     id: 10,
     title: 'Sculptural Marble Kitchen Island',
     category: 'Interior',
-    src: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_10_marble_kitchen.jpg'),
     aspect: 'square',
   },
   {
     id: 11,
     title: 'Bespoke Twilight Terrace',
     category: 'Exterior',
-    src: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_11_twilight_terrace.jpg'),
     aspect: 'wide',
   },
   {
     id: 12,
     title: 'Contemporary Linear Suite',
     category: 'Interior',
-    src: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=85',
+    src: getImageUrl('gallery/gallery_12_linear_suite.jpg'),
     aspect: 'tall',
   },
 ];
@@ -91,19 +100,47 @@ const GALLERY_IMAGES = [
 const CATEGORIES = ['All', 'Architecture', 'Interior', 'Exterior'];
 
 const Gallery = () => {
+  const [images, setImages] = useState(DEFAULT_GALLERY_IMAGES);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImage, setSelectedImage] = useState(null);
   const [fitMode, setFitMode] = useState('contain'); // 'contain' | 'cover'
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Fetch gallery items from real API
+  useEffect(() => {
+    let isMounted = true;
+    const fetchGallery = async () => {
+      try {
+        const res = await api.get('/api/gallery');
+        if (isMounted && res.data?.data && res.data.data.length > 0) {
+          const mapped = res.data.data.map((item) => ({
+            ...item,
+            src: getImageUrl(item.image),
+          }));
+          setImages(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to load gallery items:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchGallery();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Touch gesture coordinates
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchStartY, setTouchStartY] = useState(null);
 
   const filteredImages = activeCategory === 'All'
-    ? GALLERY_IMAGES
-    : GALLERY_IMAGES.filter((img) => img.category === activeCategory);
+    ? images
+    : images.filter((img) => img.category === activeCategory);
 
   const currentIndex = selectedImage
     ? filteredImages.findIndex((img) => img.id === selectedImage.id)

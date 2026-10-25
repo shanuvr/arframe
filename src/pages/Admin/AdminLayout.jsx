@@ -52,12 +52,21 @@ const AdminLayout = ({ children, title }) => {
                     </NavLink>
 
                     <NavLink
-                        to="/admin/gallery"
+                        to="/admin/proposed-projects"
                         className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
                         onClick={() => setIsSidebarOpen(false)}
                     >
                         <i className="fa-solid fa-compass-drafting"></i>
                         <span>Proposed & Ongoing</span>
+                    </NavLink>
+
+                    <NavLink
+                        to="/admin/gallery"
+                        className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
+                        onClick={() => setIsSidebarOpen(false)}
+                    >
+                        <i className="fa-solid fa-camera-retro"></i>
+                        <span>Gallery Showcase</span>
                     </NavLink>
 
                     <NavLink
