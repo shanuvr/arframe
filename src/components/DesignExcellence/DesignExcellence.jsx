@@ -162,6 +162,10 @@ const DesignExcellence = () => {
                                             src={getImageUrl(item.image)}
                                             alt={item.title}
                                             loading="lazy"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=800&q=80';
+                                            }}
                                         />
                                         <div className="proposed-card-overlay">
                                             <span className="proposed-view-badge">

@@ -97,12 +97,9 @@ const DEFAULT_GALLERY_IMAGES = [
   },
 ];
 
-const CATEGORIES = ['All', 'Architecture', 'Interior', 'Exterior'];
-
 const Gallery = () => {
   const [images, setImages] = useState(DEFAULT_GALLERY_IMAGES);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImage, setSelectedImage] = useState(null);
   const [fitMode, setFitMode] = useState('contain'); // 'contain' | 'cover'
   const [showControls, setShowControls] = useState(true);
@@ -138,23 +135,19 @@ const Gallery = () => {
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchStartY, setTouchStartY] = useState(null);
 
-  const filteredImages = activeCategory === 'All'
-    ? images
-    : images.filter((img) => img.category === activeCategory);
-
   const currentIndex = selectedImage
-    ? filteredImages.findIndex((img) => img.id === selectedImage.id)
+    ? images.findIndex((img) => img.id === selectedImage.id)
     : -1;
 
   const navigateLightbox = useCallback(
     (direction) => {
       if (!selectedImage) return;
-      const idx = filteredImages.findIndex((img) => img.id === selectedImage.id);
+      const idx = images.findIndex((img) => img.id === selectedImage.id);
       if (idx === -1) return;
-      const nextIndex = (idx + direction + filteredImages.length) % filteredImages.length;
-      setSelectedImage(filteredImages[nextIndex]);
+      const nextIndex = (idx + direction + images.length) % images.length;
+      setSelectedImage(images[nextIndex]);
     },
-    [selectedImage, filteredImages]
+    [selectedImage, images]
   );
 
   // Lock body scroll and pause Lenis while lightbox is open
@@ -270,23 +263,9 @@ const Gallery = () => {
       {/* Gallery Section */}
       <section className="gallery-main-section section-padding">
         <div className="gallery-container">
-          {/* Category Filter Pills */}
-          <div className="gallery-filter-bar">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`gallery-filter-pill ${activeCategory === cat ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
           {/* Image Grid */}
           <div className="gallery-grid">
-            {filteredImages.map((image) => (
+            {images.map((image) => (
               <div
                 key={image.id}
                 className={`gallery-card ${image.aspect || ''}`}
@@ -300,7 +279,6 @@ const Gallery = () => {
                 />
                 <div className="gallery-card-overlay">
                   <div className="gallery-card-meta">
-                    <span className="gallery-card-category">{image.category}</span>
                     <h3 className="gallery-card-title">{image.title}</h3>
                   </div>
                   <div className="gallery-card-zoom-icon">
@@ -324,9 +302,8 @@ const Gallery = () => {
           <div className="fs-top-bar" onClick={(e) => e.stopPropagation()}>
             <div className="fs-top-left">
               <span className="fs-counter">
-                {currentIndex + 1} / {filteredImages.length}
+                {currentIndex + 1} / {images.length}
               </span>
-              <span className="fs-category-badge">{selectedImage.category}</span>
             </div>
 
             <div className="fs-top-right">

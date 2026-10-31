@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { getProposedProjects, saveProposedProjects } from '../../data/proposedProjectsData.js';
+import { getProposedProjects, saveProposedProjects, MAX_PROPOSED_PROJECTS } from '../../data/proposedProjectsData.js';
 import './AdminProposedProjects.css';
 
 const DEFAULT_PHASES = [
@@ -12,20 +12,11 @@ const DEFAULT_PHASES = [
   'Finished Execution',
 ];
 
-const SAMPLE_GALLERY_PHOTOS = [
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1541888946425-d0fbb1861593?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-];
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80';
 
 const AdminProposedProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPhaseFilter, setSelectedPhaseFilter] = useState('ALL');
   const [previewImage, setPreviewImage] = useState(null);
 
   // Modal State
@@ -35,22 +26,15 @@ const AdminProposedProjects = () => {
   const [submitting, setSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  // Form State
+  // Simplified Form State (only Title, Subtitle, Phase, Image, Gallery)
   const initialForm = {
     title: '',
     subtitle: '',
     phase: 'Concept Sketch',
     image: '',
-    description: '',
-    location: '',
-    builtup_area: '',
-    land_area: '',
-    structural_type: '',
-    timeline: '',
     gallery: [],
   };
   const [formData, setFormData] = useState(initialForm);
-  const [newGalleryUrl, setNewGalleryUrl] = useState('');
 
   // Load from local store
   const loadProjects = useCallback(() => {
@@ -66,28 +50,20 @@ const AdminProposedProjects = () => {
 
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3500);
+    setTimeout(() => setToastMessage(''), 4000);
   };
 
-  // Filter projects by search & phase
-  const filteredProjects = useMemo(() => {
-    return projects.filter((p) => {
-      const matchSearch =
-        p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.subtitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.phase?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchPhase =
-        selectedPhaseFilter === 'ALL' || p.phase === selectedPhaseFilter;
-      return matchSearch && matchPhase;
-    });
-  }, [projects, searchQuery, selectedPhaseFilter]);
+  const isFull = projects.length >= MAX_PROPOSED_PROJECTS;
 
   // Open modal for Adding
   const handleOpenAdd = () => {
+    if (isFull) {
+      showToast(`Showcase is full (5/5 projects). Please delete an existing project before adding a new one.`);
+      return;
+    }
     setIsEditing(false);
     setEditingId(null);
     setFormData(initialForm);
-    setNewGalleryUrl('');
     setIsModalOpen(true);
   };
 
@@ -100,15 +76,8 @@ const AdminProposedProjects = () => {
       subtitle: project.subtitle || '',
       phase: project.phase || 'Concept Sketch',
       image: project.image || '',
-      description: project.description || '',
-      location: project.details?.location || '',
-      builtup_area: project.details?.builtup_area || '',
-      land_area: project.details?.land_area || '',
-      structural_type: project.details?.structural_type || '',
-      timeline: project.details?.timeline || '',
       gallery: project.gallery ? [...project.gallery] : (project.image ? [project.image] : []),
     });
-    setNewGalleryUrl('');
     setIsModalOpen(true);
   };
 
@@ -132,24 +101,7 @@ const AdminProposedProjects = () => {
     }
   };
 
-  // Gallery photo management
-  const handleAddGalleryUrl = () => {
-    if (!newGalleryUrl.trim()) return;
-    setFormData((prev) => ({
-      ...prev,
-      gallery: [...prev.gallery, newGalleryUrl.trim()],
-    }));
-    setNewGalleryUrl('');
-  };
-
-  const handleAddSamplePhoto = () => {
-    const randomUrl = SAMPLE_GALLERY_PHOTOS[Math.floor(Math.random() * SAMPLE_GALLERY_PHOTOS.length)];
-    setFormData((prev) => ({
-      ...prev,
-      gallery: [...prev.gallery, randomUrl],
-    }));
-  };
-
+  // Gallery multiple file upload
   const handleGalleryFileUpload = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -181,9 +133,14 @@ const AdminProposedProjects = () => {
       return;
     }
 
+    if (!isEditing && isFull) {
+      alert(`Maximum ${MAX_PROPOSED_PROJECTS} showcase projects allowed. Please delete an existing project before adding a new one.`);
+      return;
+    }
+
     setSubmitting(true);
 
-    const projectImage = formData.image.trim() || formData.gallery[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
+    const projectImage = formData.image || formData.gallery[0] || FALLBACK_IMAGE;
     const projectGallery = formData.gallery.length > 0 ? formData.gallery : [projectImage];
 
     const projectPayload = {
@@ -192,14 +149,6 @@ const AdminProposedProjects = () => {
       subtitle: formData.subtitle.trim() || `${formData.phase} Showcase`,
       phase: formData.phase,
       image: projectImage,
-      description: formData.description.trim() || 'A signature architectural concept designed with meticulous attention to modern space planning and structural innovation.',
-      details: {
-        location: formData.location.trim() || 'Kerala, India',
-        builtup_area: formData.builtup_area.trim() || '4,500 sq.ft',
-        land_area: formData.land_area.trim() || '20 Cents',
-        structural_type: formData.structural_type.trim() || 'Reinforced Concrete & Steel',
-        timeline: formData.timeline.trim() || formData.phase,
-      },
       gallery: projectGallery,
     };
 
@@ -220,14 +169,14 @@ const AdminProposedProjects = () => {
 
   // Delete project
   const handleDeleteProject = (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
+    if (!window.confirm(`Are you sure you want to delete "${title}"? This will free up a slot in the 5-project showcase.`)) {
       return;
     }
 
     const updated = projects.filter((p) => p.id !== id);
     setProjects(updated);
     saveProposedProjects(updated);
-    showToast(`Removed "${title}" from showcase.`);
+    showToast(`Removed "${title}". You can now add a new project slot.`);
   };
 
   return (
@@ -239,7 +188,7 @@ const AdminProposedProjects = () => {
             position: 'fixed',
             bottom: '24px',
             right: '24px',
-            background: '#111827',
+            background: '#0f172a',
             color: '#FFC107',
             padding: '12px 24px',
             borderRadius: '8px',
@@ -252,7 +201,7 @@ const AdminProposedProjects = () => {
             fontSize: '14px',
             fontWeight: 600
           }}>
-            <i className="fa-solid fa-circle-check"></i>
+            <i className="fa-solid fa-circle-info"></i>
             <span>{toastMessage}</span>
           </div>
         )}
@@ -261,23 +210,77 @@ const AdminProposedProjects = () => {
         <div className="gallery-mgmt-header">
           <div className="header-meta">
             <h3>Proposed &amp; Ongoing Projects Showcase</h3>
-            <p>Manage the 5+ interactive showcase projects displayed on the Home slider and their multi-photo detail pages.</p>
+            <p>Manage the exactly 5 showcase projects displayed in a row on the Home page and their photo galleries.</p>
           </div>
           <button
             type="button"
-            className="btn-upload-trigger"
-            onClick={handleOpenAdd}
+            className={`btn-upload-trigger ${isFull ? 'btn-at-capacity' : ''}`}
+            onClick={isFull ? () => showToast(`Maximum 5 projects reached. Please delete an existing project before adding a new one.`) : handleOpenAdd}
+            title={isFull ? 'Maximum 5 projects reached. Delete an existing project to add another.' : 'Add Showcase Project'}
           >
-            <i className="fa-solid fa-plus"></i>
-            <span>Add Showcase Project</span>
+            <i className={`fa-solid ${isFull ? 'fa-lock' : 'fa-plus'}`}></i>
+            <span>{isFull ? 'Showcase Full (5/5 Max)' : 'Add Showcase Project'}</span>
           </button>
         </div>
+
+        {/* 5-Project Limit Banner Notice */}
+        {isFull ? (
+          <div style={{
+            background: '#f8fafc',
+            border: '1px solid #cbd5e1',
+            borderLeft: '4px solid #b58500',
+            borderRadius: '10px',
+            padding: '14px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <i className="fa-solid fa-circle-exclamation" style={{ fontSize: '18px', color: '#b58500' }}></i>
+              <span style={{ fontSize: '13.5px', color: '#334155', lineHeight: 1.5 }}>
+                <strong>5-Project Showcase Capacity Reached:</strong> Exactly 5 projects are displayed across the Home screen row. To add a different project, please <strong>delete</strong> one of the existing projects below or <strong>edit</strong> them.
+              </span>
+            </div>
+            <span style={{
+              background: '#b58500',
+              color: '#ffffff',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: 700,
+              whiteSpace: 'nowrap'
+            }}>
+              5 / 5 Slots Active
+            </span>
+          </div>
+        ) : (
+          <div style={{
+            background: '#ecfdf5',
+            border: '1px solid #a7f3d0',
+            borderLeft: '4px solid #10b981',
+            borderRadius: '10px',
+            padding: '12px 18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            color: '#065f46',
+            fontSize: '13px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <i className="fa-solid fa-circle-check" style={{ color: '#10b981' }}></i>
+              <span>{MAX_PROPOSED_PROJECTS - projects.length} showcase slot(s) available. You can add up to 5 projects.</span>
+            </div>
+            <span style={{ fontWeight: 700 }}>{projects.length} / 5 Slots</span>
+          </div>
+        )}
 
         {/* Stats Row */}
         <div className="gallery-stats-row">
           <div className="stat-card">
-            <span className="stat-label">Active Slider Items</span>
-            <span className="stat-value">{projects.length}</span>
+            <span className="stat-label">Showcase Projects</span>
+            <span className="stat-value">{projects.length} / {MAX_PROPOSED_PROJECTS}</span>
           </div>
           <div className="stat-card">
             <span className="stat-label">Total Gallery Photos</span>
@@ -287,64 +290,19 @@ const AdminProposedProjects = () => {
           </div>
           <div className="stat-card">
             <span className="stat-label">Showcase Status</span>
-            <span className="stat-value" style={{ color: '#10b981', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <i className="fa-solid fa-circle-check"></i> 5+ Live on Home
+            <span className="stat-value" style={{ color: isFull ? '#0284c7' : '#10b981', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <i className="fa-solid fa-circle-check"></i> {isFull ? '5 / 5 Live on Home' : `${projects.length} / 5 Active`}
             </span>
           </div>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="admin-filter-bar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', maxWidth: '360px' }}>
-            <div style={{ position: 'relative', width: '100%' }}>
-              <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}></i>
-              <input
-                type="text"
-                placeholder="Search by title or phase..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '9px 12px 9px 36px',
-                  borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '14px',
-                  background: '#ffffff'
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="filter-pill-group">
-            <button
-              type="button"
-              className={`admin-filter-pill ${selectedPhaseFilter === 'ALL' ? 'active' : ''}`}
-              onClick={() => setSelectedPhaseFilter('ALL')}
-            >
-              All Phases ({projects.length})
-            </button>
-            {DEFAULT_PHASES.map((phase) => (
-              <button
-                key={phase}
-                type="button"
-                className={`admin-filter-pill ${selectedPhaseFilter === phase ? 'active' : ''}`}
-                onClick={() => setSelectedPhaseFilter(phase)}
-              >
-                {phase}
-              </button>
-            ))}
-          </div>
-
-          <span className="filter-count">Showing {filteredProjects.length} of {projects.length} projects</span>
-        </div>
-
-        {/* Project Card Grid */}
+        {/* Project Card Grid (Clean 5 projects, no search or filters) */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
             <i className="fa-solid fa-spinner fa-spin fa-2x"></i>
             <p style={{ marginTop: '12px', fontSize: '14px' }}>Loading projects...</p>
           </div>
-        ) : filteredProjects.length === 0 ? (
+        ) : projects.length === 0 ? (
           <div style={{
             textAlign: 'center',
             padding: '60px 20px',
@@ -354,9 +312,9 @@ const AdminProposedProjects = () => {
             color: '#64748b'
           }}>
             <i className="fa-solid fa-folder-open fa-3x" style={{ color: '#cbd5e1', marginBottom: '16px' }}></i>
-            <h4 style={{ color: '#1e293b', marginBottom: '6px' }}>No Projects Found</h4>
+            <h4 style={{ color: '#1e293b', marginBottom: '6px' }}>No Projects Available</h4>
             <p style={{ fontSize: '14px', maxWidth: '400px', margin: '0 auto 20px' }}>
-              {searchQuery ? `No project matching "${searchQuery}".` : 'No showcase projects found.'}
+              Get started by adding your first showcase project.
             </p>
             <button
               type="button"
@@ -369,16 +327,20 @@ const AdminProposedProjects = () => {
           </div>
         ) : (
           <div className="admin-gallery-grid">
-            {filteredProjects.map((p) => {
+            {projects.map((p) => {
               const photoCount = p.gallery?.length || 1;
               return (
                 <div key={p.id} className="admin-gallery-card">
                   <div className="card-thumb-wrapper">
                     <img
-                      src={p.image || p.gallery?.[0]}
+                      src={p.image || p.gallery?.[0] || FALLBACK_IMAGE}
                       alt={p.title}
                       className="card-thumb-img"
                       loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = FALLBACK_IMAGE;
+                      }}
                     />
                     {p.phase && (
                       <span className="thumb-badge">{p.phase}</span>
@@ -421,7 +383,7 @@ const AdminProposedProjects = () => {
                       <button
                         type="button"
                         className="action-icon-btn delete"
-                        title="Delete Project"
+                        title="Delete Project (Free Slot)"
                         onClick={() => handleDeleteProject(p.id, p.title)}
                       >
                         <i className="fa-solid fa-trash-can"></i>
@@ -432,16 +394,12 @@ const AdminProposedProjects = () => {
                   <div className="card-info">
                     <h4 className="card-title" title={p.title}>{p.title}</h4>
                     {p.subtitle && (
-                      <p style={{ fontSize: '12px', color: '#64748b', margin: '0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {p.subtitle}
                       </p>
                     )}
-                    <div className="card-sub-info" style={{ marginTop: '6px' }}>
-                      <span><i className="fa-solid fa-location-dot"></i> {p.details?.location || 'Kerala'}</span>
-                      <span><i className="fa-solid fa-ruler-combined"></i> {p.details?.builtup_area || 'Custom'}</span>
-                    </div>
 
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #f1f5f9' }}>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '14px', paddingTop: '10px', borderTop: '1px solid #f1f5f9' }}>
                       <button
                         type="button"
                         onClick={() => handleOpenEdit(p)}
@@ -485,18 +443,18 @@ const AdminProposedProjects = () => {
           </div>
         )}
 
-        {/* Add/Edit Modal */}
+        {/* Add/Edit Modal (File Upload Only - No URLs, No Samples) */}
         {isModalOpen && (
           <div className="admin-modal-overlay" onClick={() => !submitting && setIsModalOpen(false)}>
             <div
               className="admin-modal-box"
-              style={{ maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}
+              style={{ maxWidth: '650px', maxHeight: '90vh', overflowY: 'auto' }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="modal-header">
                 <div>
-                  <h4>{isEditing ? 'Edit Proposed Showcase Project' : 'Add Proposed Showcase Project'}</h4>
-                  <p>Configure project information, cover photo, and multi-angle photo gallery.</p>
+                  <h4>{isEditing ? 'Edit Showcase Project' : 'Add Showcase Project'}</h4>
+                  <p>Configure project title, subtitle, cover image, and photo gallery.</p>
                 </div>
                 <button
                   type="button"
@@ -517,7 +475,7 @@ const AdminProposedProjects = () => {
                       type="text"
                       id="title"
                       name="title"
-                      placeholder="e.g., Waterfront Modern Villa"
+                      placeholder="e.g., Structural Execution"
                       value={formData.title}
                       onChange={handleInputChange}
                       className="form-control"
@@ -526,7 +484,7 @@ const AdminProposedProjects = () => {
                     />
                   </div>
                   <div className="form-group" style={{ width: '220px' }}>
-                    <label htmlFor="phase">Project Phase / Stage</label>
+                    <label htmlFor="phase">Project Stage / Phase</label>
                     <select
                       id="phase"
                       name="phase"
@@ -543,12 +501,12 @@ const AdminProposedProjects = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="subtitle">Subtitle / Architecture Sub-heading</label>
+                  <label htmlFor="subtitle">Subtitle / Stage Tag</label>
                   <input
                     type="text"
                     id="subtitle"
                     name="subtitle"
-                    placeholder="e.g., Architectural Blueprint &amp; Spatial Massing"
+                    placeholder="e.g., Deep Foundation & Steel Superstructure"
                     value={formData.subtitle}
                     onChange={handleInputChange}
                     className="form-control"
@@ -556,90 +514,25 @@ const AdminProposedProjects = () => {
                   />
                 </div>
 
-                {/* Specs row */}
-                <div className="form-row">
-                  <div className="form-group flex-1">
-                    <label htmlFor="location">Location</label>
-                    <input
-                      type="text"
-                      id="location"
-                      name="location"
-                      placeholder="e.g., Kochi Waterfront, Kerala"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="form-group flex-1">
-                    <label htmlFor="builtup_area">Built-up Area</label>
-                    <input
-                      type="text"
-                      id="builtup_area"
-                      name="builtup_area"
-                      placeholder="e.g., 5,200 sq.ft"
-                      value={formData.builtup_area}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="form-group flex-1">
-                    <label htmlFor="land_area">Land Extent</label>
-                    <input
-                      type="text"
-                      id="land_area"
-                      name="land_area"
-                      placeholder="e.g., 24 Cents"
-                      value={formData.land_area}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    />
-                  </div>
-                </div>
-
+                {/* Primary Cover Photo (File Upload Only) */}
                 <div className="form-group">
-                  <label htmlFor="description">Architectural Concept Narrative</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows="3"
-                    placeholder="Describe the architectural concept, materials, and design philosophy..."
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="form-control"
-                    disabled={submitting}
-                  ></textarea>
-                </div>
-
-                {/* Cover Photo */}
-                <div className="form-group">
-                  <label>Primary Slider Cover Photo (URL or Upload)</label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <input
-                      type="text"
-                      name="image"
-                      placeholder="https://images.unsplash.com/..."
-                      value={formData.image}
-                      onChange={handleInputChange}
-                      className="form-control flex-1"
-                      disabled={submitting}
-                    />
+                  <label>Primary Showcase Cover Photo</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                     <label style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '6px',
-                      background: '#f1f5f9',
-                      border: '1px solid #cbd5e1',
-                      padding: '8px 14px',
+                      gap: '8px',
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      padding: '10px 18px',
                       borderRadius: '8px',
                       cursor: 'pointer',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569'
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      transition: 'background 0.2s ease'
                     }}>
-                      <i className="fa-solid fa-cloud-arrow-up"></i> Upload
+                      <i className="fa-solid fa-cloud-arrow-up"></i> Upload Cover Image
                       <input
                         type="file"
                         accept="image/*"
@@ -648,87 +541,59 @@ const AdminProposedProjects = () => {
                         disabled={submitting}
                       />
                     </label>
+                    {formData.image ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img
+                          src={formData.image}
+                          alt="Cover Preview"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = FALLBACK_IMAGE;
+                          }}
+                          style={{ width: '84px', height: '54px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                        />
+                        <span style={{ fontSize: '12px', color: '#16a34a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <i className="fa-solid fa-circle-check"></i> Image selected
+                        </span>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>
+                        No cover file chosen yet
+                      </span>
+                    )}
                   </div>
-                  {formData.image && (
-                    <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <img
-                        src={formData.image}
-                        alt="Cover Preview"
-                        style={{ width: '80px', height: '50px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-                      />
-                      <span style={{ fontSize: '12px', color: '#64748b' }}>Cover Image Preview</span>
+                </div>
+
+                {/* Multi-Photo Gallery Section (File Upload Only) */}
+                <div className="form-divider" style={{ margin: '14px 0 10px 0' }}>
+                  <span>PHOTO GALLERY ({formData.gallery.length} PHOTOS)</span>
+                </div>
+
+                <div style={{ background: '#f8fafc', padding: '18px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '14px' }}>
+                    <div>
+                      <p style={{ fontSize: '13px', color: '#334155', fontWeight: 600, margin: '0 0 2px 0' }}>
+                        Upload Gallery Photos
+                      </p>
+                      <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>
+                        Select image files from your computer for this project's dedicated photo gallery page.
+                      </p>
                     </div>
-                  )}
-                </div>
-
-                {/* Multi-Photo Gallery Section */}
-                <div className="form-divider" style={{ margin: '10px 0' }}>
-                  <span>MULTI-PHOTO GALLERY ({formData.gallery.length} PHOTOS)</span>
-                </div>
-
-                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 12px 0' }}>
-                    Add photos that will appear in this project's dedicated sub-page gallery.
-                  </p>
-
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
-                    <input
-                      type="text"
-                      placeholder="Paste Unsplash / Image URL and click Add"
-                      value={newGalleryUrl}
-                      onChange={(e) => setNewGalleryUrl(e.target.value)}
-                      className="form-control flex-1"
-                      disabled={submitting}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddGalleryUrl}
-                      disabled={!newGalleryUrl.trim() || submitting}
-                      style={{
-                        padding: '9px 16px',
-                        background: '#0f172a',
-                        color: '#ffffff',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontWeight: 600,
-                        fontSize: '13px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <i className="fa-solid fa-plus"></i> Add URL
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleAddSamplePhoto}
-                      disabled={submitting}
-                      style={{
-                        padding: '9px 14px',
-                        background: '#f1f5f9',
-                        color: '#334155',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: '8px',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        cursor: 'pointer'
-                      }}
-                      title="Add a random Unsplash architecture sample"
-                    >
-                      <i className="fa-solid fa-wand-magic-sparkles"></i> Sample
-                    </button>
                     <label style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '6px',
-                      background: '#f1f5f9',
-                      border: '1px solid #cbd5e1',
-                      padding: '9px 14px',
+                      gap: '8px',
+                      background: '#b58500',
+                      color: '#ffffff',
+                      padding: '10px 20px',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      fontSize: '12px',
+                      fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569'
+                      boxShadow: '0 2px 8px rgba(181, 133, 0, 0.25)',
+                      transition: 'all 0.2s ease'
                     }}>
-                      <i className="fa-solid fa-upload"></i> Upload
+                      <i className="fa-solid fa-cloud-arrow-up"></i> Upload Photos
                       <input
                         type="file"
                         accept="image/*"
@@ -742,17 +607,29 @@ const AdminProposedProjects = () => {
 
                   {/* Thumbnail Strip */}
                   {formData.gallery.length === 0 ? (
-                    <p style={{ fontSize: '13px', color: '#94a3b8', fontStyle: 'italic', margin: '6px 0' }}>
-                      No extra gallery photos added yet. (The cover photo will be used by default).
-                    </p>
+                    <div style={{
+                      textAlign: 'center',
+                      padding: '24px 12px',
+                      background: '#ffffff',
+                      borderRadius: '8px',
+                      border: '1px dashed #cbd5e1',
+                      color: '#94a3b8',
+                      fontSize: '13px'
+                    }}>
+                      <i className="fa-regular fa-images" style={{ fontSize: '24px', marginBottom: '6px', color: '#cbd5e1', display: 'block' }}></i>
+                      No additional gallery photos uploaded yet. (The cover photo will be shown by default).
+                    </div>
                   ) : (
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
                       gap: '10px',
-                      maxHeight: '180px',
+                      maxHeight: '200px',
                       overflowY: 'auto',
-                      padding: '6px'
+                      padding: '6px',
+                      background: '#ffffff',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0'
                     }}>
                       {formData.gallery.map((photoUrl, idx) => (
                         <div
@@ -769,6 +646,10 @@ const AdminProposedProjects = () => {
                           <img
                             src={photoUrl}
                             alt={`Gallery ${idx + 1}`}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = FALLBACK_IMAGE;
+                            }}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
                           <button
@@ -778,8 +659,8 @@ const AdminProposedProjects = () => {
                               position: 'absolute',
                               top: '4px',
                               right: '4px',
-                              width: '20px',
-                              height: '20px',
+                              width: '22px',
+                              height: '22px',
                               borderRadius: '50%',
                               background: '#ef4444',
                               color: '#fff',
@@ -787,8 +668,9 @@ const AdminProposedProjects = () => {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: '10px',
-                              cursor: 'pointer'
+                              fontSize: '11px',
+                              cursor: 'pointer',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                             }}
                             title="Remove Photo"
                           >
@@ -838,9 +720,13 @@ const AdminProposedProjects = () => {
                 <i className="fa-solid fa-xmark"></i>
               </button>
               <img
-                src={previewImage.image || previewImage.gallery?.[0]}
+                src={previewImage.image || previewImage.gallery?.[0] || FALLBACK_IMAGE}
                 alt={previewImage.title}
                 className="preview-full-img"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = FALLBACK_IMAGE;
+                }}
               />
               <div className="preview-footer">
                 <span className="preview-tag">{previewImage.phase}</span>

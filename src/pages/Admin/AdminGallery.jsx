@@ -11,17 +11,18 @@ const getImageUrl = (img) => {
   return `${IMAGE_BASE_URL}${img}`;
 };
 
-const CATEGORIES = ['Architecture', 'Interior', 'Exterior'];
-const ASPECT_OPTIONS = [
-  { value: 'tall', label: 'Tall (Portrait)', icon: 'fa-solid fa-mobile-screen' },
-  { value: 'wide', label: 'Wide (Landscape)', icon: 'fa-solid fa-panorama' },
-  { value: 'square', label: 'Square (1:1)', icon: 'fa-regular fa-square' },
-];
+// Automatically detect layout aspect ratio from image natural dimensions
+const detectAspectRatio = (width, height) => {
+  if (!width || !height) return 'square';
+  const ratio = width / height;
+  if (ratio > 1.25) return 'wide';
+  if (ratio < 0.85) return 'tall';
+  return 'square';
+};
 
 const AdminGallery = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   
   // Modal states
@@ -31,10 +32,10 @@ const AdminGallery = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Form State
+  // Form State (aspect ratio detected 100% automatically)
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Architecture',
+    category: 'Gallery',
     aspect: 'tall',
     display_order: 0,
     filePreview: '',
@@ -58,27 +59,17 @@ const AdminGallery = () => {
     fetchGallery();
   }, [fetchGallery]);
 
-  // Filtered Items
+  // Filtered Items (by search query only)
   const filteredItems = items.filter((item) => {
-    const matchesCategory = activeTab === 'All' || item.category === activeTab;
-    const matchesSearch = item.title?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return !searchQuery || item.title?.toLowerCase().includes(searchQuery.toLowerCase());
   });
-
-  // Category counts
-  const categoryCounts = {
-    All: items.length,
-    Architecture: items.filter((i) => i.category === 'Architecture').length,
-    Interior: items.filter((i) => i.category === 'Interior').length,
-    Exterior: items.filter((i) => i.category === 'Exterior').length,
-  };
 
   const handleOpenAddModal = () => {
     setEditingItem(null);
     setSelectedFile(null);
     setFormData({
       title: '',
-      category: activeTab !== 'All' ? activeTab : 'Architecture',
+      category: 'Gallery',
       aspect: 'tall',
       display_order: items.length + 1,
       filePreview: '',
@@ -91,7 +82,7 @@ const AdminGallery = () => {
     setSelectedFile(null);
     setFormData({
       title: item.title || '',
-      category: item.category || 'Architecture',
+      category: item.category || 'Gallery',
       aspect: item.aspect || 'tall',
       display_order: item.display_order || 0,
       filePreview: getImageUrl(item.image),
@@ -104,16 +95,25 @@ const AdminGallery = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Automatically detect aspect ratio upon file selection
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          filePreview: reader.result,
-        }));
+        const result = reader.result;
+        // Probe image dimensions to automatically determine aspect ratio
+        const img = new Image();
+        img.onload = () => {
+          const autoAspect = detectAspectRatio(img.naturalWidth, img.naturalHeight);
+          setFormData((prev) => ({
+            ...prev,
+            filePreview: result,
+            aspect: autoAspect,
+          }));
+        };
+        img.src = result;
       };
       reader.readAsDataURL(file);
     }
@@ -136,8 +136,8 @@ const AdminGallery = () => {
     try {
       const data = new FormData();
       data.append('title', formData.title.trim());
-      data.append('category', formData.category);
-      data.append('aspect', formData.aspect);
+      data.append('category', formData.category || 'Gallery');
+      data.append('aspect', formData.aspect || 'tall');
       data.append('display_order', formData.display_order);
 
       if (selectedFile) {
@@ -187,7 +187,7 @@ const AdminGallery = () => {
         <div className="gallery-mgmt-header">
           <div className="header-meta">
             <h3>Gallery Portfolio Management</h3>
-            <p>Upload, categorize, and organize photos displayed on the public Gallery page.</p>
+            <p>Upload architectural photos directly. Aspect ratios and layouts are detected automatically.</p>
           </div>
           <button
             type="button"
@@ -201,44 +201,31 @@ const AdminGallery = () => {
 
         {/* Stats Row */}
         <div className="gallery-stats-cards">
-          <div className="stat-card" onClick={() => setActiveTab('All')}>
-            <span className="stat-label">Total Showcase</span>
-            <span className="stat-value">{categoryCounts.All}</span>
+          <div className="stat-card">
+            <span className="stat-label">Total Gallery Photos</span>
+            <span className="stat-value">{items.length}</span>
           </div>
-          <div className="stat-card" onClick={() => setActiveTab('Architecture')}>
-            <span className="stat-label">Architecture</span>
-            <span className="stat-value">{categoryCounts.Architecture}</span>
+          <div className="stat-card">
+            <span className="stat-label">Aspect Ratios</span>
+            <span className="stat-value" style={{ fontSize: '1.2rem', color: '#0284c7', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <i className="fa-solid fa-wand-magic-sparkles"></i> 100% Auto-Detected
+            </span>
           </div>
-          <div className="stat-card" onClick={() => setActiveTab('Interior')}>
-            <span className="stat-label">Interior</span>
-            <span className="stat-value">{categoryCounts.Interior}</span>
-          </div>
-          <div className="stat-card" onClick={() => setActiveTab('Exterior')}>
-            <span className="stat-label">Exterior</span>
-            <span className="stat-value">{categoryCounts.Exterior}</span>
+          <div className="stat-card">
+            <span className="stat-label">Showcase Status</span>
+            <span className="stat-value" style={{ fontSize: '1.2rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <i className="fa-solid fa-circle-check"></i> Live on Website
+            </span>
           </div>
         </div>
 
-        {/* Filters and Search Bar */}
-        <div className="gallery-controls-bar">
-          <div className="gallery-tab-group">
-            {['All', ...CATEGORIES].map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`gallery-tab-btn ${activeTab === cat ? 'active' : ''}`}
-                onClick={() => setActiveTab(cat)}
-              >
-                {cat} ({categoryCounts[cat] ?? 0})
-              </button>
-            ))}
-          </div>
-
-          <div className="gallery-search-box">
+        {/* Search Bar */}
+        <div className="gallery-controls-bar" style={{ justifyContent: 'flex-end' }}>
+          <div className="gallery-search-box" style={{ maxWidth: '380px', width: '100%' }}>
             <i className="fa-solid fa-magnifying-glass search-icon"></i>
             <input
               type="text"
-              placeholder="Search gallery photos..."
+              placeholder="Search gallery photos by title..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="gallery-search-input"
@@ -250,7 +237,7 @@ const AdminGallery = () => {
         {loading ? (
           <div className="gallery-loading-state">
             <i className="fa-solid fa-spinner fa-spin fa-2x"></i>
-            <p>Loading gallery from database...</p>
+            <p>Loading gallery photos...</p>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="gallery-empty-state">
@@ -258,8 +245,8 @@ const AdminGallery = () => {
             <h4>No Photos Found</h4>
             <p>
               {searchQuery
-                ? `No photos matching "${searchQuery}" in ${activeTab}.`
-                : `No photos uploaded for ${activeTab} yet.`}
+                ? `No photos matching "${searchQuery}".`
+                : 'No photos uploaded to the gallery yet.'}
             </p>
             <button
               type="button"
@@ -281,10 +268,6 @@ const AdminGallery = () => {
                     className="card-thumb-img"
                     loading="lazy"
                   />
-                  <div className="thumb-badges">
-                    <span className="badge category-badge">{item.category}</span>
-                    <span className="badge aspect-badge">{item.aspect || 'tall'}</span>
-                  </div>
                   <div className="thumb-hover-actions">
                     <button
                       type="button"
@@ -315,7 +298,6 @@ const AdminGallery = () => {
                 <div className="card-info">
                   <h4 className="card-title" title={item.title}>{item.title}</h4>
                   <div className="card-meta-line">
-                    <span className="card-category-text">{item.category}</span>
                     <span className="card-order-text">Order: {item.display_order ?? 0}</span>
                   </div>
                 </div>
@@ -324,14 +306,14 @@ const AdminGallery = () => {
           </div>
         )}
 
-        {/* Add / Edit Modal */}
+        {/* Add / Edit Modal (Completely Automated Aspect Ratio) */}
         {isModalOpen && (
           <div className="admin-modal-overlay" onClick={() => !submitting && setIsModalOpen(false)}>
             <div className="admin-modal-box" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <div>
                   <h4>{editingItem ? 'Edit Gallery Photo' : 'Add Gallery Photo'}</h4>
-                  <p>Store your architectural or interior photo in Cloudflare R2.</p>
+                  <p>Upload architectural photos directly. Layout proportions are detected automatically.</p>
                 </div>
                 <button
                   type="button"
@@ -365,7 +347,7 @@ const AdminGallery = () => {
                     <label className="dropzone-label">
                       <i className="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
                       <span className="dropzone-text">Click or drag image here to upload</span>
-                      <span className="dropzone-hint">Saved directly to Cloudflare R2 (gallery/ folder)</span>
+                      <span className="dropzone-hint">Layout proportion is detected automatically</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -390,44 +372,6 @@ const AdminGallery = () => {
                     required
                     disabled={submitting}
                   />
-                </div>
-
-                <div className="form-row-2">
-                  <div className="form-group">
-                    <label htmlFor="category">Category *</label>
-                    <select
-                      id="category"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="aspect">Layout / Aspect Ratio</label>
-                    <select
-                      id="aspect"
-                      name="aspect"
-                      value={formData.aspect}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    >
-                      {ASPECT_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
                 </div>
 
                 <div className="form-group">
@@ -488,7 +432,6 @@ const AdminGallery = () => {
               <div className="preview-footer">
                 <div>
                   <h4 className="preview-title">{previewItem.title}</h4>
-                  <span className="badge category-badge">{previewItem.category}</span>
                 </div>
               </div>
             </div>

@@ -139,7 +139,7 @@ const ProposedDetail = () => {
                                     loading={index === 0 ? 'eager' : 'lazy'}
                                     onError={(e) => {
                                         e.target.onerror = null;
-                                        e.target.src = 'https://images.unsplash.com/photo-1541971875076-8f970d573be6?auto=format&fit=crop&w=1200&q=80';
+                                        e.target.src = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80';
                                     }}
                                 />
                                 <div className="propd-gallery-overlay">
@@ -212,7 +212,7 @@ const ProposedDetail = () => {
                             className="propd-lb-img"
                             onError={(e) => {
                                 e.target.onerror = null;
-                                e.target.src = 'https://images.unsplash.com/photo-1541971875076-8f970d573be6?auto=format&fit=crop&w=1600&q=85';
+                                e.target.src = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1600&q=85';
                             }}
                         />
                         <div className="propd-lb-caption">

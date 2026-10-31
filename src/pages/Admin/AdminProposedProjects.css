@@ -55,6 +55,17 @@
   box-shadow: 0 6px 18px rgba(181, 133, 0, 0.35);
 }
 
+.btn-upload-trigger.btn-at-capacity {
+  background: #475569;
+  box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+}
+
+.btn-upload-trigger.btn-at-capacity:hover {
+  background: #334155;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(71, 85, 105, 0.25);
+}
+
 /* Stats Row */
 .gallery-stats-row {
   display: grid;

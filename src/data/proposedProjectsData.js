@@ -49,7 +49,7 @@ export const INITIAL_PROPOSED_PROJECTS = [
         title: 'Structural Execution',
         subtitle: 'Deep Foundation & Steel Superstructure',
         phase: 'Structural Execution',
-        image: 'https://images.unsplash.com/photo-1541971875076-8f970d573be6?auto=format&fit=crop&w=1200&q=80',
+        image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80',
         description: 'Engineered on challenging steep terrain, this project showcases deep micro-piling and reinforced concrete retaining systems. The steel superstructure cantilevers 8 meters over the valley, creating an awe-inspiring floating observation wing.',
         details: {
             location: 'Munnar Ridge, Kerala',
@@ -59,11 +59,10 @@ export const INITIAL_PROPOSED_PROJECTS = [
             timeline: 'Superstructure In Progress (60% Complete)',
         },
         gallery: [
-            'https://images.unsplash.com/photo-1541971875076-8f970d573be6?auto=format&fit=crop&w=1600&q=85',
+            'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1600&q=85',
             'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=85',
             'https://images.unsplash.com/photo-1590486803833-1c5dc8ddd4c8?auto=format&fit=crop&w=1600&q=85',
             'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=85',
-            'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=85',
         ],
     },
     {
@@ -111,21 +110,49 @@ export const INITIAL_PROPOSED_PROJECTS = [
     },
 ];
 
-const STORAGE_KEY = 'arframe_proposed_projects_v3';
+export const MAX_PROPOSED_PROJECTS = 5;
+const STORAGE_KEY = 'arframe_proposed_projects_v6';
+
+// Helper to sanitize broken/stale URLs from earlier sessions
+const sanitizeProject = (item) => {
+    if (!item) return item;
+    const sanitized = { ...item };
+    const BROKEN_ID = '1541888946425-d0fbb1861593';
+    const VALID_FALLBACK = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80';
+
+    if (sanitized.image && sanitized.image.includes(BROKEN_ID)) {
+        sanitized.image = VALID_FALLBACK;
+    }
+    if (sanitized.id === 'structural-execution' && (!sanitized.image || sanitized.image.includes(BROKEN_ID))) {
+        sanitized.image = VALID_FALLBACK;
+    }
+    if (Array.isArray(sanitized.gallery)) {
+        sanitized.gallery = sanitized.gallery.map((url) =>
+            typeof url === 'string' && url.includes(BROKEN_ID) ? VALID_FALLBACK : url
+        );
+    }
+    return sanitized;
+};
 
 export const getProposedProjects = () => {
     try {
+        // Clean up legacy storage keys if present
+        ['arframe_proposed_projects_v1', 'arframe_proposed_projects_v2', 'arframe_proposed_projects_v3', 'arframe_proposed_projects_v4', 'arframe_proposed_projects_v5'].forEach((oldKey) => {
+            try { localStorage.removeItem(oldKey); } catch (_) {}
+        });
+
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length >= 5) {
-                return parsed;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                const cleaned = parsed.slice(0, MAX_PROPOSED_PROJECTS).map(sanitizeProject);
+                return cleaned;
             }
         }
     } catch (e) {
         console.warn('Failed to parse proposed projects from localStorage:', e);
     }
-    return INITIAL_PROPOSED_PROJECTS;
+    return INITIAL_PROPOSED_PROJECTS.slice(0, MAX_PROPOSED_PROJECTS);
 };
 
 export const getProposedProjectById = (id) => {
@@ -135,7 +162,8 @@ export const getProposedProjectById = (id) => {
 
 export const saveProposedProjects = (items) => {
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        const limited = (Array.isArray(items) ? items : []).slice(0, MAX_PROPOSED_PROJECTS).map(sanitizeProject);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(limited));
         // Dispatch custom event so listeners update across components without reload
         window.dispatchEvent(new Event('proposed_projects_updated'));
     } catch (e) {
