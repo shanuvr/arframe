@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../api/axios.js';
+import { getProposedProjects } from '../../data/proposedProjectsData.js';
 import './DesignExcellence.css';
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba380656084edda4d915551564adce.r2.dev/';
@@ -28,44 +30,26 @@ const DesignExcellence = () => {
         { number: '03', label: 'Construction' },
     ];
 
-    useEffect(() => {
-        let isMounted = true;
-
-        const fetchProjects = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get('/api/proposed-projects');
-                if (isMounted && res.data?.data && res.data.data.length > 0) {
-                    setProjects(res.data.data);
-                } else if (isMounted) {
-                    setProjects([
-                        { id: 1, title: 'Concept Sketch', image: '/designexcellence/Concept Sketch.jpg' },
-                        { id: 2, title: '3D Visualization', image: '/designexcellence/3D Visualization.jpg' },
-                        { id: 3, title: 'Finished Project', image: '/designexcellence/Finished Project.jpg' },
-                    ]);
-                }
-            } catch (err) {
-                console.error('Failed to fetch proposed projects:', err);
-                if (isMounted) {
-                    setProjects([
-                        { id: 1, title: 'Concept Sketch', image: '/designexcellence/Concept Sketch.jpg' },
-                        { id: 2, title: '3D Visualization', image: '/designexcellence/3D Visualization.jpg' },
-                        { id: 3, title: 'Finished Project', image: '/designexcellence/Finished Project.jpg' },
-                    ]);
-                }
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
-            }
-        };
-
-        fetchProjects();
-
-        return () => {
-            isMounted = false;
-        };
+    const loadProjects = useCallback(() => {
+        setLoading(true);
+        try {
+            const data = getProposedProjects();
+            setProjects(data);
+        } catch {
+            setProjects([]);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        loadProjects();
+
+        // Listen for admin changes dispatched across windows/tabs
+        const handleSync = () => loadProjects();
+        window.addEventListener('proposed_projects_updated', handleSync);
+        return () => window.removeEventListener('proposed_projects_updated', handleSync);
+    }, [loadProjects]);
 
     const checkScrollButtons = () => {
         const el = sliderRef.current;
@@ -129,17 +113,17 @@ const DesignExcellence = () => {
     };
 
     return (
-        <section className="dark-section" id="design">
-            <div className="container grid-2">
-                <div>
-                    <span className="section-subtitle">PROPOSED AND ONGOING PROJECTS</span>
+        <section className="dark-section proposed-section" id="design">
+            <div className="proposed-wide-container">
+                <div className="proposed-left-col">
+                    <span className="section-subtitle">PROPOSED AND ONGOING</span>
                     <h2>Crafted For You.<br />Designed For Life.</h2>
                     <p>
                         Every client has a unique vision. We create architecture designed around your lifestyle, your family,
-                        your future, your land, and your dreams.
+                        your future, and your dreams.
                     </p>
 
-                    <div className="process-flow">
+                    <div className="process-flow compact">
                         {processSteps.map((step, index) => (
                             <div key={index} className="process-step">
                                 <div className="step-icon">{step.number}</div>
@@ -149,61 +133,50 @@ const DesignExcellence = () => {
                     </div>
                 </div>
 
-                <div className="proposed-slider-wrapper">
-                    {/* Slider Navigation Header */}
-                    <div className="proposed-slider-nav">
+                <div className="proposed-right-showcase">
+                    <div className="proposed-showcase-header">
                         <span className="proposed-slider-count">
-                            {projects.length > 0 ? `${projects.length} Showcase Items` : ''}
+                            <i className="fa-solid fa-shapes"></i> {projects.length} Showcase Stages
                         </span>
-                        <div className="proposed-slider-arrows">
-                            <button
-                                type="button"
-                                className="proposed-arrow-btn"
-                                onClick={() => handleScroll('left')}
-                                disabled={!canScrollLeft}
-                                aria-label="Previous Project"
-                            >
-                                <i className="fa-solid fa-chevron-left"></i>
-                            </button>
-                            <button
-                                type="button"
-                                className="proposed-arrow-btn"
-                                onClick={() => handleScroll('right')}
-                                disabled={!canScrollRight}
-                                aria-label="Next Project"
-                            >
-                                <i className="fa-solid fa-chevron-right"></i>
-                            </button>
-                        </div>
+                        <span className="proposed-click-hint">
+                            Click any project to explore full gallery <i className="fa-solid fa-arrow-right"></i>
+                        </span>
                     </div>
 
-                    {/* Horizontal Scrollable Slider Track */}
-                    <div
-                        className="proposed-slider-track"
-                        ref={sliderRef}
-                        onMouseDown={handleMouseDown}
-                        onMouseLeave={handleMouseLeave}
-                        onMouseUp={handleMouseUp}
-                        onMouseMove={handleMouseMove}
-                    >
+                    <div className="proposed-5-grid">
                         {loading && projects.length === 0 ? (
                             <div className="proposed-slider-loading">
                                 <i className="fa-solid fa-spinner fa-spin"></i>
-                                <span>Loading proposed projects...</span>
+                                <span>Loading showcase projects...</span>
                             </div>
                         ) : (
                             projects.map((item) => (
-                                <div key={item.id} className="proposed-slider-card">
+                                <Link
+                                    key={item.id}
+                                    to={`/proposed-projects/${item.id}`}
+                                    className="proposed-slider-card"
+                                    title={`View ${item.title} details & photos`}
+                                >
                                     <div className="proposed-img-box">
                                         <img
                                             src={getImageUrl(item.image)}
                                             alt={item.title}
                                             loading="lazy"
-                                            draggable={false}
                                         />
+                                        <div className="proposed-card-overlay">
+                                            <span className="proposed-view-badge">
+                                                <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                            </span>
+                                        </div>
+                                        {item.phase && (
+                                            <span className="proposed-phase-tag">{item.phase}</span>
+                                        )}
                                     </div>
                                     <p className="proposed-card-title">{item.title}</p>
-                                </div>
+                                    {item.subtitle && (
+                                        <p className="proposed-card-subtitle">{item.subtitle}</p>
+                                    )}
+                                </Link>
                             ))
                         )}
                     </div>

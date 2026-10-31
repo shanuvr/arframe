@@ -1,201 +1,259 @@
-.dark-section {
-    background-color: var(--dark);
+/* ===== DESIGN EXCELLENCE (PROPOSED & ONGOING PROJECTS 5-IN-A-ROW) ===== */
+
+.dark-section.proposed-section {
+    background-color: var(--dark, #111111);
     color: #ffffff;
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding-top: 60px;
+    padding-bottom: 70px;
     overflow: hidden;
 }
 
-.dark-section h2 {
-    font-size: 42px;
-    line-height: 1.2;
-    margin-bottom: 25px;
-}
-
-.dark-section p {
-    color: #aaaaaa;
-    font-size: 15px;
-    margin-bottom: 40px;
-}
-
-.grid-2 {
+.proposed-wide-container {
+    width: 95%;
+    max-width: 1540px;
+    margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    grid-template-columns: 350px 1fr;
+    gap: 40px;
     align-items: center;
 }
 
-.process-flow {
-    display: flex;
-    gap: 30px;
-}
-
-.process-step {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.step-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary);
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.step-label {
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 500;
-}
-
-/* ===== PROPOSED PROJECTS HORIZONTAL SLIDER ===== */
-.proposed-slider-wrapper {
-    position: relative;
+/* Left Column: Generous, readable, and well-spaced */
+.proposed-left-col {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    overflow: hidden;
+    justify-content: center;
 }
 
-.proposed-slider-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 4px;
-}
-
-.proposed-slider-count {
-    font-size: 12px;
-    letter-spacing: 1.5px;
+.proposed-left-col .section-subtitle {
+    display: block;
+    font-size: 11.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--primary);
-    font-weight: 600;
+    color: var(--primary, #FFC107);
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
-.proposed-slider-arrows {
+.proposed-left-col h2 {
+    font-family: var(--font-heading, 'Marcellus', serif);
+    font-size: 34px;
+    line-height: 1.2;
+    color: #ffffff;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+
+.proposed-left-col p {
+    color: #cbd5e1;
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin-bottom: 24px;
+}
+
+/* Process Flow */
+.process-flow.compact {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.process-flow.compact .process-step {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.proposed-arrow-btn {
+.process-flow.compact .step-icon {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-flex;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--primary, #FFC107);
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
-    transition: all 0.25s ease;
+    color: var(--primary, #FFC107);
+    font-size: 13.5px;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
-.proposed-arrow-btn:hover:not(:disabled) {
-    background: var(--primary);
-    color: #000000;
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+.process-flow.compact .step-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #e2e8f0;
 }
 
-.proposed-arrow-btn:disabled {
-    opacity: 0.25;
-    cursor: not-allowed;
-    border-color: rgba(255, 255, 255, 0.1);
+/* Right Showcase: 5 Images In A Row At Once */
+.proposed-right-showcase {
+    width: 100%;
+    min-width: 0;
 }
 
-.proposed-slider-track {
+.proposed-showcase-header {
     display: flex;
-    gap: 16px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
-    padding: 6px 2px 14px 2px;
-    -webkit-overflow-scrolling: touch;
-    cursor: grab;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 2px;
 }
 
-.proposed-slider-track::-webkit-scrollbar {
-    display: none;
+.proposed-slider-count {
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--primary, #FFC107);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.proposed-slider-track:active {
-    cursor: grabbing;
+.proposed-click-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+}
+
+.proposed-click-hint i {
+    color: var(--primary, #FFC107);
+    font-size: 10px;
+    transition: transform 0.25s ease;
+}
+
+.proposed-5-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    width: 100%;
 }
 
 .proposed-slider-loading {
+    grid-column: span 5;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 100%;
-    min-height: 250px;
+    min-height: 200px;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
+    font-size: 13px;
 }
 
+/* Individual Showcase Card */
 .proposed-slider-card {
-    /* Exactly 3 cards fit totally in the viewport (100% minus 2 gaps of 16px) */
-    flex: 0 0 calc((100% - 32px) / 3);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
     min-width: 0;
-    scroll-snap-align: start;
-    text-align: center;
+    cursor: pointer;
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    user-select: none;
 }
 
 .proposed-slider-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
 }
 
 .proposed-img-box {
     width: 100%;
-    height: 240px;
-    border-radius: 6px;
+    height: 195px;
+    border-radius: 8px;
     overflow: hidden;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    background: #141414;
     position: relative;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .proposed-img-box img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
     display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
 }
 
-.proposed-slider-card:hover .proposed-img-box img {
-    transform: scale(1.06);
+.proposed-slider-card:hover .proposed-img-box {
+    border-color: var(--primary, #FFC107);
+    box-shadow: 0 10px 24px rgba(255, 193, 7, 0.25);
 }
 
+.proposed-slider-card:hover .proposed-img-box img {
+    transform: scale(1.08);
+}
+
+/* Hover Overlay & View Badge */
+.proposed-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.15) 60%, transparent 100%);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.proposed-slider-card:hover .proposed-card-overlay {
+    opacity: 1;
+}
+
+.proposed-view-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary, #FFC107);
+    color: #111111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    transform: scale(0.85);
+    transition: transform 0.25s ease;
+}
+
+.proposed-slider-card:hover .proposed-view-badge {
+    transform: scale(1);
+}
+
+/* Phase Tag Pill */
+.proposed-phase-tag {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    background: rgba(17, 17, 17, 0.88);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    color: var(--primary, #FFC107);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 7px;
+    border-radius: 12px;
+    pointer-events: none;
+    z-index: 2;
+    white-space: nowrap;
+}
+
+/* Card Titles */
 .proposed-card-title {
-    font-size: 12px;
-    letter-spacing: 0.8px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
     color: #ffffff;
-    margin: 0;
-    font-weight: 500;
-    font-family: var(--font-body);
+    margin: 8px 0 2px 0;
+    font-weight: 600;
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
     transition: color 0.25s ease;
     white-space: nowrap;
     overflow: hidden;
@@ -203,103 +261,84 @@
 }
 
 .proposed-slider-card:hover .proposed-card-title {
-    color: var(--primary);
+    color: var(--primary, #FFC107);
 }
 
-/* ===== RESPONSIVE MEDIA QUERIES ===== */
-@media (max-width: 992px) {
-    .dark-section .grid-2 {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
+.proposed-card-subtitle {
+    font-size: 9.5px;
+    color: #64748b;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
 
-    .dark-section h2 {
-        font-size: 32px;
-    }
-
-    .process-flow {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .step-icon {
-        width: 42px;
-        height: 42px;
-        font-size: 15px;
-    }
-
-    .step-label {
-        font-size: 12px;
-    }
-
-    .proposed-slider-track {
-        gap: 14px;
-    }
-
-    .proposed-slider-card {
-        flex: 0 0 calc((100% - 28px) / 3);
+/* Responsive Breakpoints */
+@media (max-width: 1200px) {
+    .proposed-wide-container {
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
     }
 
     .proposed-img-box {
-        height: 220px;
+        height: 180px;
+    }
+
+    .proposed-left-col h2 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 992px) {
+    .proposed-wide-container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .proposed-left-col {
+        padding-right: 0;
+    }
+
+    .process-flow.compact {
+        flex-direction: row;
+        gap: 16px;
+    }
+
+    .proposed-5-grid {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 14px;
+    }
+
+    .proposed-img-box {
+        height: 230px;
     }
 }
 
 @media (max-width: 576px) {
-    .dark-section {
-        padding-top: 50px;
+    .dark-section.proposed-section {
+        padding-top: 45px;
         padding-bottom: 50px;
     }
 
-    .dark-section h2 {
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
-
-    .dark-section p {
-        font-size: 13px;
-        margin-bottom: 25px;
-    }
-
-    .process-flow {
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    .process-step {
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .step-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 12px;
-    }
-
-    .step-label {
-        font-size: 9px;
-        letter-spacing: 0.5px;
-    }
-
-    .proposed-slider-track {
+    .proposed-5-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
 
-    .proposed-slider-card {
-        flex: 0 0 calc((100% - 20px) / 3);
-    }
-
     .proposed-img-box {
-        height: 120px;
+        height: 170px;
     }
 
-    .proposed-card-title {
-        font-size: 9.5px;
-        letter-spacing: 0.5px;
+    .proposed-left-col h2 {
+        font-size: 20px;
+    }
+
+    .proposed-left-col p {
+        font-size: 12px;
+    }
+
+    .proposed-click-hint {
+        display: none;
     }
 }

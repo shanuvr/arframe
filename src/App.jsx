@@ -17,6 +17,7 @@ const Projects = lazy(() => import('./pages/Projects/Projects'));
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail/ProjectDetail'));
 const Gallery = lazy(() => import('./pages/Gallery/Gallery'));
 const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
+const ProposedDetail = lazy(() => import('./pages/ProposedDetail/ProposedDetail'));
 const AdminLogin = lazy(() => import('./pages/Admin/AdminLogin'));
 const AdminProjects = lazy(() => import('./pages/Admin/AdminProjects'));
 const AdminProposedProjects = lazy(() => import('./pages/Admin/AdminProposedProjects'));
@@ -82,6 +83,7 @@ function App() {
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/proposed-projects/:id" element={<ProposedDetail />} />
 
           {/* Public Admin Route */}
           <Route path="/admin" element={<AdminLogin />} />

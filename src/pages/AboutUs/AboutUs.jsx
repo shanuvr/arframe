@@ -110,16 +110,12 @@ const AboutUs = () => {
           <div className="container">
             <div className="stats-grid">
               <div className="stat-item">
-                <span className="stat-number">15+</span>
-                <span className="stat-label">Years of Excellence</span>
+                <span className="stat-number">6+</span>
+                <span className="stat-label">Years of Experience</span>
               </div>
               <div className="stat-item">
-                <span className="stat-number">250+</span>
+                <span className="stat-number">75+</span>
                 <span className="stat-label">Projects Completed</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">50+</span>
-                <span className="stat-label">Industry Awards</span>
               </div>
               <div className="stat-item">
                 <span className="stat-number">100%</span>
