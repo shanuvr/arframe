@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { getProposedProjects, saveProposedProjects, MAX_PROPOSED_PROJECTS } from '../../data/proposedProjectsData.js';
+import api from '../../api/axios.js';
+import { buildImageUrl } from '../../api/pageSettings.js';
+import { getProposedProjects, MAX_PROPOSED_PROJECTS } from '../../data/proposedProjectsData.js';
 import './AdminProposedProjects.css';
-
-const DEFAULT_PHASES = [
-  'Concept Sketch',
-  '3D Visualization',
-  'Structural Execution',
-  'Interior Detailing',
-  'Finished Execution',
-];
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80';
 
@@ -26,22 +20,33 @@ const AdminProposedProjects = () => {
   const [submitting, setSubmitting] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  // Simplified Form State (only Title, Subtitle, Phase, Image, Gallery)
+  // Form State
   const initialForm = {
     title: '',
     subtitle: '',
-    phase: 'Concept Sketch',
     image: '',
-    gallery: [],
+    coverFile: null,
+    existingGallery: [],
+    newGalleryFiles: [],
   };
   const [formData, setFormData] = useState(initialForm);
 
-  // Load from local store
-  const loadProjects = useCallback(() => {
+  // Load from backend API with fallback
+  const loadProjects = useCallback(async () => {
     setLoading(true);
-    const data = getProposedProjects();
-    setProjects(data);
-    setLoading(false);
+    try {
+      const res = await api.get('/api/proposed-projects');
+      if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+        setProjects(res.data.data);
+      } else {
+        setProjects(getProposedProjects());
+      }
+    } catch (err) {
+      console.warn('API error in admin proposed projects, using fallback:', err);
+      setProjects(getProposedProjects());
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -71,12 +76,17 @@ const AdminProposedProjects = () => {
   const handleOpenEdit = (project) => {
     setIsEditing(true);
     setEditingId(project.id);
+    const existingList = Array.isArray(project.gallery) && project.gallery.length > 0
+      ? [...project.gallery]
+      : (project.image ? [project.image] : []);
+
     setFormData({
       title: project.title || '',
       subtitle: project.subtitle || '',
-      phase: project.phase || 'Concept Sketch',
       image: project.image || '',
-      gallery: project.gallery ? [...project.gallery] : (project.image ? [project.image] : []),
+      coverFile: null,
+      existingGallery: existingList,
+      newGalleryFiles: [],
     });
     setIsModalOpen(true);
   };
@@ -90,14 +100,11 @@ const AdminProposedProjects = () => {
   const handleCoverFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          image: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        coverFile: file,
+        image: URL.createObjectURL(file),
+      }));
     }
   };
 
@@ -105,28 +112,48 @@ const AdminProposedProjects = () => {
   const handleGalleryFileUpload = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          gallery: [...prev.gallery, reader.result],
-        }));
-      };
-      reader.readAsDataURL(file);
-    });
+    const newItems = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setFormData((prev) => ({
+      ...prev,
+      newGalleryFiles: [...prev.newGalleryFiles, ...newItems],
+    }));
     e.target.value = '';
   };
 
-  const handleRemoveGalleryPhoto = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      gallery: prev.gallery.filter((_, i) => i !== index),
+  // Combined gallery photos for modal preview
+  const allGalleryPhotos = useMemo(() => {
+    const existing = (formData.existingGallery || []).map((url, index) => ({
+      type: 'existing',
+      url,
+      index,
     }));
+    const newlyAdded = (formData.newGalleryFiles || []).map((item, index) => ({
+      type: 'new',
+      url: item.preview,
+      index,
+    }));
+    return [...existing, ...newlyAdded];
+  }, [formData.existingGallery, formData.newGalleryFiles]);
+
+  const handleRemoveGalleryPhoto = (type, index) => {
+    if (type === 'existing') {
+      setFormData((prev) => ({
+        ...prev,
+        existingGallery: prev.existingGallery.filter((_, i) => i !== index),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        newGalleryFiles: prev.newGalleryFiles.filter((_, i) => i !== index),
+      }));
+    }
   };
 
-  // Submit Add or Edit
-  const handleSubmit = (e) => {
+  // Submit Add or Edit to backend D1/R2 API
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim()) {
       alert('Please enter a project title.');
@@ -140,43 +167,63 @@ const AdminProposedProjects = () => {
 
     setSubmitting(true);
 
-    const projectImage = formData.image || formData.gallery[0] || FALLBACK_IMAGE;
-    const projectGallery = formData.gallery.length > 0 ? formData.gallery : [projectImage];
+    try {
+      const payload = new FormData();
+      payload.append('title', formData.title.trim());
+      payload.append('subtitle', formData.subtitle.trim());
 
-    const projectPayload = {
-      id: isEditing && editingId ? editingId : `proposed-${Date.now()}`,
-      title: formData.title.trim(),
-      subtitle: formData.subtitle.trim() || `${formData.phase} Showcase`,
-      phase: formData.phase,
-      image: projectImage,
-      gallery: projectGallery,
-    };
+      if (formData.coverFile) {
+        payload.append('image', formData.coverFile);
+      } else if (formData.image) {
+        payload.append('imageUrl', formData.image);
+      }
 
-    let updatedList;
-    if (isEditing) {
-      updatedList = projects.map((p) => (p.id === editingId ? projectPayload : p));
-      showToast(`Updated "${projectPayload.title}" successfully!`);
-    } else {
-      updatedList = [...projects, projectPayload];
-      showToast(`Added "${projectPayload.title}" to showcase!`);
+      (formData.existingGallery || []).forEach((item) => {
+        payload.append('keep_gallery', item);
+      });
+
+      (formData.newGalleryFiles || []).forEach((item) => {
+        payload.append('gallery_files', item.file);
+      });
+
+      if (isEditing && editingId) {
+        await api.put(`/api/proposed-projects/${editingId}`, payload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        showToast(`Updated "${formData.title}" successfully in D1!`);
+      } else {
+        await api.post('/api/proposed-projects', payload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        showToast(`Added "${formData.title}" to D1 showcase!`);
+      }
+
+      await loadProjects();
+      window.dispatchEvent(new Event('proposed_projects_updated'));
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error('Error saving proposed project:', err);
+      alert('Failed to save proposed project to backend API. Please check server logs.');
+    } finally {
+      setSubmitting(false);
     }
-
-    setProjects(updatedList);
-    saveProposedProjects(updatedList);
-    setIsModalOpen(false);
-    setSubmitting(false);
   };
 
-  // Delete project
-  const handleDeleteProject = (id, title) => {
+  // Delete project from backend D1/R2 API
+  const handleDeleteProject = async (id, title) => {
     if (!window.confirm(`Are you sure you want to delete "${title}"? This will free up a slot in the 5-project showcase.`)) {
       return;
     }
 
-    const updated = projects.filter((p) => p.id !== id);
-    setProjects(updated);
-    saveProposedProjects(updated);
-    showToast(`Removed "${title}". You can now add a new project slot.`);
+    try {
+      await api.delete(`/api/proposed-projects/${id}`);
+      await loadProjects();
+      window.dispatchEvent(new Event('proposed_projects_updated'));
+      showToast(`Removed "${title}". You can now add a new project slot.`);
+    } catch (err) {
+      console.error('Error deleting proposed project:', err);
+      alert('Failed to delete proposed project from backend.');
+    }
   };
 
   return (
@@ -333,7 +380,7 @@ const AdminProposedProjects = () => {
                 <div key={p.id} className="admin-gallery-card">
                   <div className="card-thumb-wrapper">
                     <img
-                      src={p.image || p.gallery?.[0] || FALLBACK_IMAGE}
+                      src={buildImageUrl(p.image || p.gallery?.[0]) || FALLBACK_IMAGE}
                       alt={p.title}
                       className="card-thumb-img"
                       loading="lazy"
@@ -342,9 +389,6 @@ const AdminProposedProjects = () => {
                         e.target.src = FALLBACK_IMAGE;
                       }}
                     />
-                    {p.phase && (
-                      <span className="thumb-badge">{p.phase}</span>
-                    )}
                     <span style={{
                       position: 'absolute',
                       bottom: '10px',
@@ -468,36 +512,19 @@ const AdminProposedProjects = () => {
 
               <form onSubmit={handleSubmit} className="modal-form">
                 {/* Basic Info */}
-                <div className="form-row">
-                  <div className="form-group flex-1">
-                    <label htmlFor="title">Project Title *</label>
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      placeholder="e.g., Structural Execution"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      required
-                      disabled={submitting}
-                    />
-                  </div>
-                  <div className="form-group" style={{ width: '220px' }}>
-                    <label htmlFor="phase">Project Stage / Phase</label>
-                    <select
-                      id="phase"
-                      name="phase"
-                      value={formData.phase}
-                      onChange={handleInputChange}
-                      className="form-control"
-                      disabled={submitting}
-                    >
-                      {DEFAULT_PHASES.map((phase) => (
-                        <option key={phase} value={phase}>{phase}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="form-group">
+                  <label htmlFor="title">Project Title *</label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="e.g., Coastal Villa Concept"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="form-control"
+                    required
+                    disabled={submitting}
+                  />
                 </div>
 
                 <div className="form-group">
@@ -544,7 +571,7 @@ const AdminProposedProjects = () => {
                     {formData.image ? (
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <img
-                          src={formData.image}
+                          src={buildImageUrl(formData.image) || FALLBACK_IMAGE}
                           alt="Cover Preview"
                           onError={(e) => {
                             e.target.onerror = null;
@@ -566,7 +593,7 @@ const AdminProposedProjects = () => {
 
                 {/* Multi-Photo Gallery Section (File Upload Only) */}
                 <div className="form-divider" style={{ margin: '14px 0 10px 0' }}>
-                  <span>PHOTO GALLERY ({formData.gallery.length} PHOTOS)</span>
+                  <span>PHOTO GALLERY ({allGalleryPhotos.length} PHOTOS)</span>
                 </div>
 
                 <div style={{ background: '#f8fafc', padding: '18px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
@@ -606,7 +633,7 @@ const AdminProposedProjects = () => {
                   </div>
 
                   {/* Thumbnail Strip */}
-                  {formData.gallery.length === 0 ? (
+                  {allGalleryPhotos.length === 0 ? (
                     <div style={{
                       textAlign: 'center',
                       padding: '24px 12px',
@@ -631,7 +658,7 @@ const AdminProposedProjects = () => {
                       borderRadius: '8px',
                       border: '1px solid #e2e8f0'
                     }}>
-                      {formData.gallery.map((photoUrl, idx) => (
+                      {allGalleryPhotos.map((photo, idx) => (
                         <div
                           key={idx}
                           style={{
@@ -644,7 +671,7 @@ const AdminProposedProjects = () => {
                           }}
                         >
                           <img
-                            src={photoUrl}
+                            src={buildImageUrl(photo.url) || FALLBACK_IMAGE}
                             alt={`Gallery ${idx + 1}`}
                             onError={(e) => {
                               e.target.onerror = null;
@@ -654,7 +681,7 @@ const AdminProposedProjects = () => {
                           />
                           <button
                             type="button"
-                            onClick={() => handleRemoveGalleryPhoto(idx)}
+                            onClick={() => handleRemoveGalleryPhoto(photo.type, photo.index)}
                             style={{
                               position: 'absolute',
                               top: '4px',
@@ -720,7 +747,7 @@ const AdminProposedProjects = () => {
                 <i className="fa-solid fa-xmark"></i>
               </button>
               <img
-                src={previewImage.image || previewImage.gallery?.[0] || FALLBACK_IMAGE}
+                src={buildImageUrl(previewImage.image || previewImage.gallery?.[0]) || FALLBACK_IMAGE}
                 alt={previewImage.title}
                 className="preview-full-img"
                 onError={(e) => {
@@ -729,7 +756,6 @@ const AdminProposedProjects = () => {
                 }}
               />
               <div className="preview-footer">
-                <span className="preview-tag">{previewImage.phase}</span>
                 <span className="preview-title">{previewImage.title}</span>
               </div>
             </div>

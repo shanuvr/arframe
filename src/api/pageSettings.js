@@ -6,7 +6,7 @@ const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba3
 
 export const buildImageUrl = (img) => {
     if (!img) return '';
-    if (img.startsWith('http') || img.startsWith('/')) return img;
+    if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:') || img.startsWith('blob:')) return img;
     return `${IMAGE_BASE_URL}${img}`;
 };
 

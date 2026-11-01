@@ -8,7 +8,7 @@ const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || 'https://pub-fbba3
 
 const getImageUrl = (img) => {
     if (!img) return '/designexcellence/Concept Sketch.jpg';
-    if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+    if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:') || img.startsWith('blob:')) return img;
     return `${IMAGE_BASE_URL}${img}`;
 };
 
@@ -30,13 +30,17 @@ const DesignExcellence = () => {
         { number: '03', label: 'Construction' },
     ];
 
-    const loadProjects = useCallback(() => {
+    const loadProjects = useCallback(async () => {
         setLoading(true);
         try {
-            const data = getProposedProjects();
-            setProjects(data);
+            const res = await api.get('/api/proposed-projects');
+            if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+                setProjects(res.data.data);
+            } else {
+                setProjects(getProposedProjects());
+            }
         } catch {
-            setProjects([]);
+            setProjects(getProposedProjects());
         } finally {
             setLoading(false);
         }
@@ -172,9 +176,6 @@ const DesignExcellence = () => {
                                                 <i className="fa-solid fa-arrow-up-right-from-square"></i>
                                             </span>
                                         </div>
-                                        {item.phase && (
-                                            <span className="proposed-phase-tag">{item.phase}</span>
-                                        )}
                                     </div>
                                     <p className="proposed-card-title">{item.title}</p>
                                     {item.subtitle && (

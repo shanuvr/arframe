@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import api from '../../api/axios.js';
+import { buildImageUrl } from '../../api/pageSettings.js';
 import { getProposedProjectById, getProposedProjects } from '../../data/proposedProjectsData.js';
 import './ProposedDetail.css';
 
 const ProposedDetail = () => {
     const { id } = useParams();
     const [project, setProject] = useState(null);
+    const [allProjects, setAllProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [lightboxIndex, setLightboxIndex] = useState(null);
 
     // Scroll to top on navigation
@@ -13,14 +17,46 @@ const ProposedDetail = () => {
         window.scrollTo(0, 0);
     }, [id]);
 
-    // Load project data
+    // Load dynamic projects and find current
     useEffect(() => {
-        const found = getProposedProjectById(id);
-        setProject(found);
+        let isMounted = true;
+        setLoading(true);
+
+        const fetchData = async () => {
+            try {
+                const res = await api.get('/api/proposed-projects');
+                if (isMounted && res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+                    const list = res.data.data;
+                    setAllProjects(list);
+                    const found = list.find((p) => String(p.id) === String(id));
+                    if (found) {
+                        setProject(found);
+                        setLoading(false);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('API fetch failed in ProposedDetail, falling back to local data:', err);
+            }
+
+            // Fallback to local store
+            if (isMounted) {
+                const fallbackList = getProposedProjects();
+                setAllProjects(fallbackList);
+                const localFound = getProposedProjectById(id) || fallbackList.find((p) => String(p.id) === String(id));
+                setProject(localFound || null);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            isMounted = false;
+        };
     }, [id]);
 
     // Navigation between projects
-    const allProjects = useMemo(() => getProposedProjects(), []);
     const currentIndex = useMemo(() => {
         return allProjects.findIndex((p) => String(p.id) === String(id));
     }, [allProjects, id]);
@@ -39,10 +75,10 @@ const ProposedDetail = () => {
 
     const images = useMemo(() => {
         if (!project) return [];
-        if (project.gallery && project.gallery.length > 0) {
-            return project.gallery;
-        }
-        return project.image ? [project.image] : [];
+        const raw = project.gallery && project.gallery.length > 0
+            ? project.gallery
+            : (project.image ? [project.image] : []);
+        return raw.map(buildImageUrl);
     }, [project]);
 
     // Lightbox handlers
@@ -70,6 +106,18 @@ const ProposedDetail = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [lightboxIndex, prevLightbox, nextLightbox]);
+
+    if (loading) {
+        return (
+            <div className="propd-not-found white-theme">
+                <div className="container text-center">
+                    <i className="fa-solid fa-spinner fa-spin propd-icon-missing"></i>
+                    <h2>Loading Project Details...</h2>
+                    <p>Preparing the architectural gallery for you.</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!project) {
         return (
@@ -99,11 +147,6 @@ const ProposedDetail = () => {
 
                     <div className="propd-header-flex">
                         <div className="propd-title-group">
-                            {project.phase && (
-                                <span className="propd-phase-badge">
-                                    <i className="fa-solid fa-compass-drafting"></i> {project.phase}
-                                </span>
-                            )}
                             <h1 className="propd-title">{project.title}</h1>
                         </div>
 
