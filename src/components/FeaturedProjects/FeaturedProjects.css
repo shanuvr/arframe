@@ -1,7 +1,11 @@
 .featured-projects-section {
     background-color: #ffffff;
-    padding-top: 90px;
+    padding-top: 50px;
     padding-bottom: 90px;
+}
+
+.featured-projects-section .container {
+    padding-top: 0;
 }
 
 .section-header-flex {

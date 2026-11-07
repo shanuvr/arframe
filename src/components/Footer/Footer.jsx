@@ -16,6 +16,7 @@ const Footer = () => {
         { label: 'Commercial', to: '/projects' },
         { label: 'Architecture', to: '/projects' },
         { label: 'Interior Design', to: '/projects' },
+        { label: 'Pre-Engineered Buildings (PEB)', to: '/projects' },
     ];
 
     return (

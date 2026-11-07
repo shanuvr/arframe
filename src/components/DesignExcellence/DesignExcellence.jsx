@@ -24,12 +24,6 @@ const DesignExcellence = () => {
     const startXRef = useRef(0);
     const scrollLeftRef = useRef(0);
 
-    const processSteps = [
-        { number: '01', label: 'Consultation' },
-        { number: '02', label: 'Design' },
-        { number: '03', label: 'Construction' },
-    ];
-
     const loadProjects = useCallback(async () => {
         setLoading(true);
         try {
@@ -119,22 +113,8 @@ const DesignExcellence = () => {
     return (
         <section className="dark-section proposed-section" id="design">
             <div className="proposed-wide-container">
-                <div className="proposed-left-col">
-                    <span className="section-subtitle">PROPOSED AND ONGOING</span>
-                    <h2>Crafted For You.<br />Designed For Life.</h2>
-                    <p>
-                        Every client has a unique vision. We create architecture designed around your lifestyle, your family,
-                        your future, and your dreams.
-                    </p>
-
-                    <div className="process-flow compact">
-                        {processSteps.map((step, index) => (
-                            <div key={index} className="process-step">
-                                <div className="step-icon">{step.number}</div>
-                                <div className="step-label">{step.label}</div>
-                            </div>
-                        ))}
-                    </div>
+                <div className="proposed-section-header">
+                    <h2>Proposed &amp; Ongoing Projects</h2>
                 </div>
 
                 <div className="proposed-right-showcase">

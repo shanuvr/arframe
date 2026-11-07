@@ -4,6 +4,7 @@ import About from '../components/About/About';
 import Expertise from '../components/Expertise/Expertise';
 import DesignExcellence from '../components/DesignExcellence/DesignExcellence';
 import FeaturedProjects from '../components/FeaturedProjects/FeaturedProjects';
+import RealTransformations from '../components/RealTransformations/RealTransformations';
 import WhyChooseUs from '../components/WhyChooseUs/WhyChooseUs';
 import Team from '../components/Team/Team';
 import Testimonials from '../components/Testimonials/Testimonials';
@@ -13,10 +14,11 @@ const Home = () => {
   return (
     <main>
       <Hero />
-      <About />
       <Expertise />
       <FeaturedProjects />
       <DesignExcellence />
+      <RealTransformations />
+      <About />
       <WhyChooseUs />
       <Team />
       <Testimonials />

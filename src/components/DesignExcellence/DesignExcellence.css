@@ -12,80 +12,24 @@
     width: 95%;
     max-width: 1540px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 40px;
-    align-items: center;
-}
-
-/* Left Column: Generous, readable, and well-spaced */
-.proposed-left-col {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 24px;
 }
 
-.proposed-left-col .section-subtitle {
-    display: block;
-    font-size: 11.5px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--primary, #FFC107);
-    margin-bottom: 10px;
-    font-weight: 700;
+/* Section Header */
+.proposed-section-header {
+    display: flex;
+    flex-direction: column;
 }
 
-.proposed-left-col h2 {
+.proposed-section-header h2 {
     font-family: var(--font-heading, 'Marcellus', serif);
     font-size: 34px;
     line-height: 1.2;
     color: #ffffff;
-    margin-bottom: 16px;
+    margin: 0;
     letter-spacing: 0.5px;
-}
-
-.proposed-left-col p {
-    color: #cbd5e1;
-    font-size: 14.5px;
-    line-height: 1.65;
-    margin-bottom: 24px;
-}
-
-/* Process Flow */
-.process-flow.compact {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-.process-flow.compact .process-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.process-flow.compact .step-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--primary, #FFC107);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary, #FFC107);
-    font-size: 13.5px;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.process-flow.compact .step-label {
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 600;
-    color: #e2e8f0;
 }
 
 /* Right Showcase: 5 Images In A Row At Once */
@@ -277,32 +221,21 @@
 /* Responsive Breakpoints */
 @media (max-width: 1200px) {
     .proposed-wide-container {
-        grid-template-columns: 300px 1fr;
-        gap: 24px;
+        gap: 20px;
     }
 
     .proposed-img-box {
         height: 180px;
     }
 
-    .proposed-left-col h2 {
+    .proposed-section-header h2 {
         font-size: 28px;
     }
 }
 
 @media (max-width: 992px) {
     .proposed-wide-container {
-        grid-template-columns: 1fr;
-        gap: 28px;
-    }
-
-    .proposed-left-col {
-        padding-right: 0;
-    }
-
-    .process-flow.compact {
-        flex-direction: row;
-        gap: 16px;
+        gap: 24px;
     }
 
     .proposed-5-grid {
@@ -330,12 +263,8 @@
         height: 170px;
     }
 
-    .proposed-left-col h2 {
+    .proposed-section-header h2 {
         font-size: 20px;
-    }
-
-    .proposed-left-col p {
-        font-size: 12px;
     }
 
     .proposed-click-hint {
